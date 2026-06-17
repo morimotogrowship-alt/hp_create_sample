@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RESERVE — LUXIA HAIR</title>
+<meta name="description" content="LUXIA HAIRのご予約フォーム。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="">
+<div id="site-header"></div>
+
+<section class="page-banner"><div class="en">RESERVE</div><div class="ja">ご予約</div></section>
+
+<section class="form-page">
+  <p class="form-intro">ご希望の内容をご入力ください。<br>ご予約確定後、確認のご連絡をいたします。</p>
+  <form class="luxia">
+    <div>
+      <label>サロン <span class="req">*</span></label>
+      <select required><option value="">選択してください</option><option>LUXIA 表参道</option><option>LUXIA 銀座</option><option>LUXIA 名古屋栄</option><option>LUXIA 梅田</option><option>LUXIA 福岡天神</option></select>
+    </div>
+    <div>
+      <label>ご希望メニュー <span class="req">*</span></label>
+      <select required><option value="">選択してください</option><option>カット</option><option>カット＋カラー</option><option>カット＋パーマ</option><option>トリートメント</option><option>ヘッドスパ</option><option>プレミアム体験キャンペーン</option></select>
+    </div>
+    <div class="two">
+      <div><label>ご希望日 <span class="req">*</span></label><input type="date" required></div>
+      <div><label>ご希望時間 <span class="req">*</span></label><select required><option value="">選択してください</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option></select></div>
+    </div>
+    <div><label>お名前 <span class="req">*</span></label><input type="text" required placeholder="山田 花子"></div>
+    <div class="two">
+      <div><label>電話番号 <span class="req">*</span></label><input type="tel" required placeholder="090-1234-5678"></div>
+      <div><label>メールアドレス</label><input type="email" placeholder="example@mail.com"></div>
+    </div>
+    <div><label>ご要望・ご相談</label><textarea rows="4" placeholder="担当スタイリストのご指名、髪のお悩みなど"></textarea></div>
+    <button type="submit">RESERVE　ご予約を送信</button>
+  </form>
+  <div class="form-done">
+    <div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#b0935e" stroke-width="1.6"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h3>ご予約を受け付けました</h3>
+    <p>この度はご予約いただきありがとうございます。<br>担当者より確認のご連絡をいたしますので、少々お待ちください。</p>
+    <a class="btn" href="index.html" style="margin-top:38px;justify-content:center;gap:12px;"><span>トップへ戻る</span><span class="arw">→</span></a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js"></script>
+</body>
+</html>
