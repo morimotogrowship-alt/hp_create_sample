@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LUXIA HAIR — 美しさは、髪からはじまる。</title>
+  <meta name="description" content="LUXIA HAIR｜上質な技術と心地よい時間で、髪本来の美しさを引き出すヘアサロン。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #fafaf8;
+      --gold: #c9a96e;
+      --gold-light: #e8d5b0;
+      --gray: #888;
+      --serif: 'Noto Serif JP', serif;
+      --sans: 'Noto Sans JP', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+      mix-blend-mode: difference;
+      transition: padding 0.4s ease;
+    }
+
+    .nav.scrolled { padding: 18px 48px; }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0.85;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    /* ===== HERO ===== */
+    #hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    /* Image slides */
+    .hero-slides {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: -10%;           /* extra space for Ken Burns zoom */
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.08);
+      transition: opacity 1.2s ease, transform 8s ease;
+      will-change: transform, opacity;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+      transform: scale(1.0);
+    }
+
+    .hero-slide:nth-child(1) { background-image: url('https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/hero-1.png'); }
+    .hero-slide:nth-child(2) { background-image: url('https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/hero-2.png'); }
+    .hero-slide:nth-child(3) { background-image: url('https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/hero-3.png'); }
+    .hero-slide:nth-child(4) { background-image: url('https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/hero-4.png'); }
+
+    /* Dark overlay */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.25) 0%,
+        rgba(0,0,0,0.45) 60%,
+        rgba(0,0,0,0.65) 100%
+      );
+    }
+
+    /* Side grain texture */
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+    }
+
+    /* Hero content */
+    .hero-content {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .hero-label {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 1s ease 2.9s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 7vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.25;
+      color: #fff;
+      letter-spacing: 0.06em;
+      margin-bottom: 24px;
+    }
+
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+      animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .hero-title .line:nth-child(1) .line-inner { animation-delay: 3.1s; }
+    .hero-title .line:nth-child(2) .line-inner { animation-delay: 3.35s; }
+
+    .hero-sub {
+      font-family: var(--sans);
+      font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 1s ease 3.7s forwards;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 14px 36px;
+      transition: background 0.3s, border-color 0.3s;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 1s ease 4.0s forwards;
+    }
+
+    .hero-cta:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.7);
+    }
+
+    /* Slide counter */
+    .hero-counter {
+      position: absolute;
+      bottom: 48px;
+      right: 48px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 1s ease 4.3s forwards;
+    }
+
+    .hero-counter-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .hero-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+
+    .hero-dot.active {
+      background: var(--gold);
+      transform: scale(1.5);
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeUp 1s ease 4.3s forwards;
+    }
+
+    .scroll-text {
+      font-size: 0.62rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      writing-mode: horizontal-tb;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: rgba(255,255,255,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gold);
+      animation: scrollLine 1.8s ease-in-out 2.2s infinite;
+    }
+
+    /* Parallax container for next section transition */
+    .hero-parallax-img {
+      position: absolute;
+      bottom: -8%;
+      left: 0;
+      right: 0;
+      height: 30%;
+      background: linear-gradient(to top, var(--white) 0%, transparent 100%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* ===== CONCEPT SECTION ===== */
+    #concept {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .concept-text-side {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 100px 80px 100px 100px;
+      background: var(--white);
+      position: relative;
+      z-index: 2;
+    }
+
+    .concept-label {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      margin-bottom: 36px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .concept-label.visible { opacity: 1; transform: translateY(0); }
+
+    .concept-heading {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3.4rem);
+      font-weight: 300;
+      line-height: 1.55;
+      letter-spacing: 0.04em;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .concept-heading .reveal-line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .concept-heading .reveal-inner {
+      display: block;
+      transform: translateY(100%);
+      transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .concept-heading.visible .reveal-inner { transform: translateY(0); }
+    .concept-heading.visible .reveal-line:nth-child(2) .reveal-inner { transition-delay: 0.12s; }
+
+    .concept-body {
+      font-size: 0.88rem;
+      line-height: 2.1;
+      color: #555;
+      max-width: 440px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease 0.4s, transform 0.9s ease 0.4s;
+    }
+
+    .concept-body.visible { opacity: 1; transform: translateY(0); }
+
+    .concept-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 48px;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      color: var(--black);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease 0.6s, transform 0.9s ease 0.6s;
+    }
+
+    .concept-link.visible { opacity: 1; transform: translateY(0); }
+
+    .concept-link::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--black);
+      transition: width 0.3s ease;
+    }
+
+    .concept-link:hover::after { width: 70px; }
+
+    /* Concept image side */
+    .concept-image-side {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .concept-image-inner {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-mirror.png');
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.1);
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .concept-image-side.visible .concept-image-inner {
+      transform: scale(1.0);
+    }
+
+    /* Concept vertical decoration */
+    .concept-deco {
+      position: absolute;
+      left: -48px;
+      top: 50%;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+
+    /* ===== GALLERY SECTION ===== */
+    #gallery {
+      padding: 120px 0 80px;
+      overflow: hidden;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.68rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .section-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 300;
+      text-align: center;
+      letter-spacing: 0.06em;
+      margin-bottom: 64px;
+    }
+
+    .gallery-track-wrap {
+      overflow: hidden;
+    }
+
+    .gallery-track {
+      display: flex;
+      gap: 16px;
+      animation: marquee 22s linear infinite;
+      width: max-content;
+    }
+
+    .gallery-track:hover { animation-play-state: paused; }
+
+    .gallery-item {
+      flex-shrink: 0;
+      width: 280px;
+      height: 380px;
+      overflow: hidden;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .gallery-item:hover img { transform: scale(1.05); }
+
+    /* ===== SALON SECTION ===== */
+    #salon {
+      padding: 100px 80px;
+    }
+
+    .salon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 64px;
+    }
+
+    .salon-card {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .salon-card.visible { opacity: 1; transform: translateY(0); }
+    .salon-card:nth-child(2) { transition-delay: 0.1s; }
+    .salon-card:nth-child(3) { transition-delay: 0.2s; }
+    .salon-card:nth-child(4) { transition-delay: 0.15s; }
+    .salon-card:nth-child(5) { transition-delay: 0.25s; }
+
+    .salon-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .salon-card:hover img { transform: scale(1.06); }
+
+    .salon-card-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+      color: #fff;
+    }
+
+    .salon-location {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+    }
+
+    .salon-name {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== CAMPAIGN SECTION ===== */
+    #campaign {
+      position: relative;
+      overflow: hidden;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .campaign-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-long-side.png');
+      background-size: cover;
+      background-position: center 20%;
+      z-index: 0;
+    }
+
+    .campaign-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.2) 100%);
+    }
+
+    .campaign-content {
+      position: relative;
+      z-index: 1;
+      padding: 80px 100px;
+      color: #fff;
+      max-width: 600px;
+    }
+
+    .campaign-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.45em;
+      color: var(--gold-light);
+      margin-bottom: 20px;
+    }
+
+    .campaign-title {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      font-weight: 300;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .campaign-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 12px;
+    }
+
+    .campaign-price {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      margin-bottom: 36px;
+    }
+
+    .campaign-price del { color: rgba(255,255,255,0.45); }
+    .campaign-price strong { color: var(--gold-light); font-size: 1.5rem; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.78rem;
+      letter-spacing: 0.25em;
+      padding: 16px 40px;
+      background: var(--gold);
+      color: var(--black);
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover { background: var(--gold-light); }
+
+    /* ===== NEWS ===== */
+    #news {
+      padding: 100px 80px;
+    }
+
+    .news-list {
+      margin-top: 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .news-item {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 28px 0;
+      border-bottom: 1px solid #e8e8e6;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .news-item.visible { opacity: 1; transform: translateY(0); }
+    .news-item:nth-child(2) { transition-delay: 0.1s; }
+    .news-item:nth-child(3) { transition-delay: 0.2s; }
+
+    .news-thumb {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      overflow: hidden;
+    }
+
+    .news-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .news-date {
+      font-size: 0.72rem;
+      color: var(--gray);
+      flex-shrink: 0;
+      letter-spacing: 0.1em;
+    }
+
+    .news-title {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ===== INSTAGRAM ===== */
+    #instagram {
+      padding: 80px 0;
+      overflow: hidden;
+    }
+
+    .instagram-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 3px;
+      margin-top: 48px;
+    }
+
+    .ig-item {
+      aspect-ratio: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .ig-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease, filter 0.5s ease;
+      filter: grayscale(20%);
+    }
+
+    .ig-item:hover img {
+      transform: scale(1.08);
+      filter: grayscale(0%);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--black);
+      color: rgba(255,255,255,0.6);
+      padding: 80px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 48px;
+      flex-wrap: wrap;
+      margin-bottom: 60px;
+    }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .footer-tagline {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover { color: #fff; }
+
+    .footer-copy {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 32px;
+      text-align: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+    }
+
+    /* ===== INTRO OVERLAY ===== */
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: transform 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+      pointer-events: none;
+    }
+
+    #intro.slide-up { transform: translateY(-101%); }
+    #intro.done { display: none; }
+
+    .intro-label {
+      font-family: var(--sans);
+      font-size: 0.65rem;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp 0.6s ease 0.4s forwards;
+    }
+
+    .intro-logo {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 9vw, 8rem);
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: 0.35em;
+      text-align: center;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    .intro-logo-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(60px);
+      animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+    }
+
+    .intro-tagline {
+      font-family: var(--serif);
+      font-size: clamp(0.8rem, 1.5vw, 1rem);
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      margin-top: 24px;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp 0.7s ease 1.3s forwards;
+    }
+
+    .intro-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: progressLine 2s ease 0.5s forwards;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes progressLine {
+      to { transform: scaleX(1); }
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scrollLine {
+      0%   { top: -100%; }
+      50%  { top: 0%; }
+      100% { top: 100%; }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 768px) {
+      .nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+
+      #concept { grid-template-columns: 1fr; }
+      .concept-image-side { height: 50vw; }
+      .concept-text-side { padding: 64px 32px; }
+
+      #salon { padding: 80px 24px; }
+      .salon-grid { grid-template-columns: 1fr 1fr; }
+
+      .campaign-content { padding: 60px 32px; }
+
+      #news { padding: 80px 32px; }
+      footer { padding: 60px 32px; }
+
+      .instagram-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- INTRO OVERLAY -->
+  <div id="intro">
+    <p class="intro-label">Hair Salon</p>
+    <h1 class="intro-logo"><span class="intro-logo-inner">LUXIA HAIR</span></h1>
+    <p class="intro-tagline">美しさは、髪からはじまる。</p>
+    <div class="intro-line"></div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-logo">LUXIA HAIR</div>
+    <ul class="nav-links">
+      <li><a href="#concept">Concept</a></li>
+      <li><a href="#gallery">Style</a></li>
+      <li><a href="#salon">Salon</a></li>
+      <li><a href="#campaign">Campaign</a></li>
+      <li><a href="#news">News</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-slides">
+      <div class="hero-slide active"></div>
+      <div class="hero-slide"></div>
+      <div class="hero-slide"></div>
+      <div class="hero-slide"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-grain"></div>
+
+    <div class="hero-content">
+      <p class="hero-label">Hair Salon — Tokyo / Osaka / Nagoya</p>
+      <h1 class="hero-title">
+        <span class="line"><span class="line-inner">美しさは、</span></span>
+        <span class="line"><span class="line-inner">髪からはじまる。</span></span>
+      </h1>
+      <p class="hero-sub">Beauty begins with beautiful hair.</p>
+      <a href="#concept" class="hero-cta">Discover More</a>
+    </div>
+
+    <div class="hero-counter">
+      <div class="hero-counter-dots">
+        <div class="hero-dot active" data-index="0"></div>
+        <div class="hero-dot" data-index="1"></div>
+        <div class="hero-dot" data-index="2"></div>
+        <div class="hero-dot" data-index="3"></div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span class="scroll-text">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+
+    <div class="hero-parallax-img"></div>
+  </section>
+
+  <!-- CONCEPT -->
+  <section id="concept">
+    <div class="concept-text-side">
+      <p class="concept-label js-reveal">CONCEPT</p>
+      <h2 class="concept-heading js-reveal-heading">
+        <span class="reveal-line"><span class="reveal-inner">本質的な美しさを、</span></span>
+        <span class="reveal-line"><span class="reveal-inner">デザインする。</span></span>
+      </h2>
+      <p class="concept-body js-reveal">
+        LUXIA HAIRは、髪そのものの美しさを引き出すことを大切にしています。<br>
+        一人ひとりのライフスタイルや価値観に寄り添い、<br>
+        あなただけの「上質な美しさ」をご提案します。
+      </p>
+      <a href="concept.html" class="concept-link js-reveal">コンセプトを見る</a>
+      <span class="concept-deco">LUXIA HAIR — CONCEPT</span>
+    </div>
+    <div class="concept-image-side js-reveal-image">
+      <div class="concept-image-inner"></div>
+    </div>
+  </section>
+
+  <!-- STYLE GALLERY -->
+  <section id="gallery">
+    <p class="section-label">STYLE GALLERY</p>
+    <h2 class="section-heading">ヘアスタイルギャラリー</h2>
+    <div class="gallery-track-wrap">
+      <div class="gallery-track">
+        <!-- Double the items for seamless loop -->
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-long.png" alt="ロングスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-short.png" alt="ショートスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-wave.png" alt="ウェーブスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-bob.png" alt="ボブスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-layer.png" alt="レイヤースタイル" loading="lazy"></div>
+        <!-- Duplicate for loop -->
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-long.png" alt="ロングスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-short.png" alt="ショートスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-wave.png" alt="ウェーブスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-bob.png" alt="ボブスタイル" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-layer.png" alt="レイヤースタイル" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SALON -->
+  <section id="salon">
+    <p class="section-label">SALON</p>
+    <h2 class="section-heading">全国のサロン</h2>
+    <div class="salon-grid">
+      <div class="salon-card js-salon-card">
+        <img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-row.png" alt="LUXIA 表参道" loading="lazy">
+        <div class="salon-card-info">
+          <p class="salon-location">TOKYO</p>
+          <p class="salon-name">LUXIA 表参道</p>
+        </div>
+      </div>
+      <div class="salon-card js-salon-card">
+        <img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-lounge.png" alt="LUXIA 銀座" loading="lazy">
+        <div class="salon-card-info">
+          <p class="salon-location">TOKYO</p>
+          <p class="salon-name">LUXIA 銀座</p>
+        </div>
+      </div>
+      <div class="salon-card js-salon-card">
+        <img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-bright.png" alt="LUXIA 名古屋栄" loading="lazy">
+        <div class="salon-card-info">
+          <p class="salon-location">AICHI</p>
+          <p class="salon-name">LUXIA 名古屋栄</p>
+        </div>
+      </div>
+      <div class="salon-card js-salon-card">
+        <img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-corridor.png" alt="LUXIA 梅田" loading="lazy">
+        <div class="salon-card-info">
+          <p class="salon-location">OSAKA</p>
+          <p class="salon-name">LUXIA 梅田</p>
+        </div>
+      </div>
+      <div class="salon-card js-salon-card">
+        <img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-reception.png" alt="LUXIA 福岡天神" loading="lazy">
+        <div class="salon-card-info">
+          <p class="salon-location">FUKUOKA</p>
+          <p class="salon-name">LUXIA 福岡天神</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAMPAIGN -->
+  <section id="campaign">
+    <div class="campaign-bg"></div>
+    <div class="campaign-content">
+      <p class="campaign-label">CAMPAIGN</p>
+      <h2 class="campaign-title">初めての方へ<br>プレミアム体験キャンペーン</h2>
+      <p class="campaign-desc">カット＋カラー＋トリートメント</p>
+      <p class="campaign-price"><del>通常 ¥18,700</del>　→　<strong>¥13,200</strong><small>（税込）</small></p>
+      <a href="campaign.html" class="btn-primary">キャンペーン詳細・ご予約はこちら</a>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section id="news">
+    <p class="section-label">NEWS</p>
+    <h2 class="section-heading">お知らせ</h2>
+    <div class="news-list">
+      <a href="news.html" class="news-item js-news-item">
+        <div class="news-thumb"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-bob.png" alt="" loading="lazy"></div>
+        <span class="news-date">2024.05.20</span>
+        <span class="news-title">【キャンペーン】初めての方へプレミアム体験キャンペーン実施中</span>
+      </a>
+      <a href="news.html" class="news-item js-news-item">
+        <div class="news-thumb"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-bright.png" alt="" loading="lazy"></div>
+        <span class="news-date">2024.05.10</span>
+        <span class="news-title">【新店舗】LUXIA 札幌店 6/1(土) グランドオープン</span>
+      </a>
+      <a href="news.html" class="news-item js-news-item">
+        <div class="news-thumb"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-short.png" alt="" loading="lazy"></div>
+        <span class="news-date">2024.04.28</span>
+        <span class="news-title">【お知らせ】価格改定のお知らせ</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM -->
+  <section id="instagram">
+    <p class="section-label">FOLLOW US</p>
+    <h2 class="section-heading" style="margin-bottom: 0; font-size: 0.85rem; letter-spacing: 0.3em; font-family: var(--sans); font-weight: 300;">@luxia_hair_official</h2>
+    <div class="instagram-grid">
+      <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-long.png" alt="" loading="lazy"></div>
+      <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-wave.png" alt="" loading="lazy"></div>
+      <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-layer.png" alt="" loading="lazy"></div>
+      <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-bright.png" alt="" loading="lazy"></div>
+      <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-short.png" alt="" loading="lazy"></div>
+      <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-bob.png" alt="" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p class="footer-logo">LUXIA HAIR</p>
+        <p class="footer-tagline">Beauty begins with beautiful hair.</p>
+      </div>
+      <div class="footer-links">
+        <a href="concept.html">Concept</a>
+        <a href="style.html">Style Gallery</a>
+        <a href="salon.html">Salon</a>
+        <a href="campaign.html">Campaign</a>
+        <a href="news.html">News</a>
+      </div>
+      <div class="footer-links">
+        <a href="salon.html">表参道 / 銀座</a>
+        <a href="salon.html">名古屋栄 / 梅田</a>
+        <a href="salon.html">福岡天神</a>
+      </div>
+    </div>
+    <p class="footer-copy">© LUXIA HAIR All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // ===== INTRO CURTAIN =====
+    const intro = document.getElementById('intro');
+    // 2.5秒後にカーテンを上にスライドアウト
+    setTimeout(() => {
+      intro.classList.add('slide-up');
+      intro.addEventListener('transitionend', () => {
+        intro.classList.add('done');
+      }, { once: true });
+    }, 2500);
+
+    // ===== HERO SLIDESHOW =====
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots   = document.querySelectorAll('.hero-dot');
+    let current  = 0;
+    let timer;
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = (n + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
+
+    function next() { goTo(current + 1); }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(next, 5000);
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        goTo(parseInt(dot.dataset.index));
+        startTimer();
+      });
+    });
+
+    startTimer();
+
+    // ===== NAV SCROLL =====
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 80);
+    }, { passive: true });
+
+    // ===== HERO PARALLAX =====
+    const heroGrain = document.querySelector('.hero-grain');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      const hero = document.getElementById('hero');
+      if (y < hero.offsetHeight * 1.2) {
+        // Slow the slides slightly on scroll for parallax feel
+        document.querySelectorAll('.hero-slide').forEach(s => {
+          s.style.transform = `scale(${s.classList.contains('active') ? 1 : 1.08}) translateY(${y * 0.25}px)`;
+        });
+      }
+    }, { passive: true });
+
+    // ===== INTERSECTION OBSERVER =====
+    const observerOpts = { threshold: 0.2 };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, observerOpts);
+
+    document.querySelectorAll(
+      '.js-reveal, .js-reveal-heading, .js-reveal-image, .js-salon-card, .js-news-item'
+    ).forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
