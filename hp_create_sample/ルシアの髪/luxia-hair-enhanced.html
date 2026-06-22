@@ -30,7 +30,12 @@
         "sameAs": [
           "https://www.instagram.com/luxia_hair_official"
         ],
-        "description": "LUXIA HAIRは、表参道・銀座・名古屋栄・梅田・福岡天神に展開する高級ヘアサロンブランドです。一人ひとりのライフスタイルに寄り添い、カット・カラー・トリートメントの上質な技術で髪本来の美しさを引き出します。"
+        "description": "LUXIA HAIRは、表参道・銀座・名古屋栄・梅田・福岡天神に展開する高級ヘアサロンブランドです。一人ひとりのライフスタイルに寄り添い、カット・カラー・トリートメントの上質な技術で髪本来の美しさを引き出します。",
+        "award": "HOT PEPPER Beauty Award 2023 受賞",
+        "numberOfEmployees": {
+          "@type": "QuantitativeValue",
+          "value": 45
+        }
       },
       {
         "@type": "HairSalon",
@@ -136,14 +141,35 @@
         "inLanguage": "ja"
       },
       {
+        "@type": "WebPage",
+        "@id": "https://luxia-hair.jp/#webpage",
+        "url": "https://luxia-hair.jp",
+        "name": "LUXIA HAIR — 美しさは、髪からはじまる。",
+        "description": "LUXIA HAIRは、表参道・銀座・名古屋栄・梅田・福岡天神に展開する高級ヘアサロンブランドです。カット・カラー・トリートメントの上質な技術で、髪本来の美しさを引き出します。",
+        "isPartOf": { "@id": "https://luxia-hair.jp/#website" },
+        "about": { "@id": "https://luxia-hair.jp/#organization" },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ホーム",
+              "item": "https://luxia-hair.jp"
+            }
+          ]
+        },
+        "inLanguage": "ja"
+      },
+      {
         "@type": "FAQPage",
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "LUXIA HAIRはどのような美容院ですか？",
+            "name": "LUXIA HAIRとはどのような美容院ですか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "LUXIA HAIRは、表参道・銀座・名古屋栄・梅田・福岡天神に展開する高級ヘアサロンです。カット・カラー・トリートメント・パーマの上質な技術と落ち着いた空間で、お客様一人ひとりの髪本来の美しさを引き出します。"
+              "text": "LUXIA HAIRとは、表参道・銀座・名古屋栄・梅田・福岡天神に展開する高級ヘアサロンです。カット・カラー・トリートメント・パーマの上質な技術と落ち着いた空間で、お客様一人ひとりの髪本来の美しさを引き出します。スタイリスト45名以上が在籍し、年間5万人以上のお客様にご来店いただいています。"
             }
           },
           {
@@ -160,6 +186,22 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "東京（表参道・銀座）、愛知（名古屋栄）、大阪（梅田）、福岡（天神）の全国5店舗を展開しています。2024年6月には札幌店もグランドオープン予定です。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "LUXIA HAIRの料金はどのくらいですか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "カットは¥7,700（税込）〜、カラーは¥11,000（税込）〜、トリートメントは¥5,500（税込）〜となっています。初回ご来店の方には、カット＋カラー＋トリートメントのセットを¥13,200（税込）でご提供するキャンペーンも実施中です。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "予約方法を教えてください。",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LUXIA HAIRは完全予約制です。公式サイトのオンライン予約フォーム、またはお電話にてご予約いただけます。当日予約もお電話で承っておりますので、お気軽にお問い合わせください。"
             }
           }
         ]
@@ -526,6 +568,21 @@
     .concept-heading.visible .reveal-inner { transform: translateY(0); }
     .concept-heading.visible .reveal-line:nth-child(2) .reveal-inner { transition-delay: 0.12s; }
 
+    .concept-definition {
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: var(--black);
+      font-weight: 400;
+      border-left: 2px solid var(--gold);
+      padding-left: 16px;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease 0.25s, transform 0.9s ease 0.25s;
+    }
+
+    .concept-definition.visible { opacity: 1; transform: translateY(0); }
+
     .concept-body {
       font-size: 0.88rem;
       line-height: 2.1;
@@ -596,6 +653,54 @@
       letter-spacing: 0.4em;
       color: var(--gold);
       opacity: 0.6;
+    }
+
+    /* ===== STATS SECTION ===== */
+    #stats {
+      background: var(--black);
+      padding: 80px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 48px 32px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .stat-item:last-child { border-right: none; }
+    .stat-item.visible { opacity: 1; transform: translateY(0); }
+    .stat-item:nth-child(2) { transition-delay: 0.1s; }
+    .stat-item:nth-child(3) { transition-delay: 0.2s; }
+    .stat-item:nth-child(4) { transition-delay: 0.3s; }
+
+    .stat-number {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .stat-number span {
+      font-size: 0.55em;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.5);
     }
 
     /* ===== GALLERY SECTION ===== */
@@ -835,6 +940,213 @@
       line-height: 1.6;
     }
 
+    /* ===== FAQ SECTION ===== */
+    #faq {
+      padding: 100px 80px;
+      background: #f5f4f1;
+    }
+
+    .faq-list {
+      max-width: 800px;
+      margin: 64px auto 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid #ddd;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .faq-item.visible { opacity: 1; transform: translateY(0); }
+    .faq-item:nth-child(2) { transition-delay: 0.08s; }
+    .faq-item:nth-child(3) { transition-delay: 0.16s; }
+    .faq-item:nth-child(4) { transition-delay: 0.24s; }
+    .faq-item:nth-child(5) { transition-delay: 0.32s; }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 28px 0;
+      text-align: left;
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+      color: var(--black);
+    }
+
+    .faq-q-label {
+      flex-shrink: 0;
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .faq-q-text {
+      flex: 1;
+    }
+
+    .faq-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon::before,
+    .faq-icon::after {
+      content: '';
+      position: absolute;
+      background: var(--gold);
+      border-radius: 1px;
+    }
+
+    .faq-icon::before { width: 100%; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+    .faq-icon::after  { width: 1px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); transition: opacity 0.3s ease; }
+
+    .faq-item.open .faq-icon::after { opacity: 0; }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .faq-answer-inner {
+      padding: 0 0 28px 36px;
+      font-size: 0.88rem;
+      line-height: 2.0;
+      color: #555;
+    }
+
+    .faq-a-label {
+      display: inline-block;
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--black);
+      font-weight: 400;
+      margin-right: 10px;
+    }
+
+    /* ===== AWARDS / AUTHORITY SECTION ===== */
+    #awards {
+      padding: 80px;
+      background: var(--white);
+      border-top: 1px solid #e8e8e6;
+    }
+
+    .awards-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .awards-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--black);
+      text-align: center;
+    }
+
+    .awards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px 48px;
+    }
+
+    .award-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .award-item.visible { opacity: 1; transform: translateY(0); }
+    .award-item:nth-child(2) { transition-delay: 0.1s; }
+    .award-item:nth-child(3) { transition-delay: 0.2s; }
+    .award-item:nth-child(4) { transition-delay: 0.3s; }
+
+    .award-badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .award-badge svg {
+      width: 32px;
+      height: 32px;
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1.5;
+    }
+
+    .award-text {
+      text-align: center;
+    }
+
+    .award-title {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--black);
+      margin-bottom: 4px;
+    }
+
+    .award-detail {
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      color: var(--gray);
+    }
+
+    .media-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      padding-top: 32px;
+      border-top: 1px solid #e8e8e6;
+      width: 100%;
+    }
+
+    .media-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      color: var(--gray);
+      flex-basis: 100%;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .media-name {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      color: #aaa;
+      font-style: italic;
+    }
+
     /* ===== INSTAGRAM ===== */
     #instagram {
       padding: 80px 0;
@@ -1024,12 +1336,23 @@
       .concept-image-side { height: 50vw; }
       .concept-text-side { padding: 64px 32px; }
 
+      #stats { padding: 60px 24px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .stat-item:nth-child(2n) { border-right: none; }
+
       #salon { padding: 80px 24px; }
       .salon-grid { grid-template-columns: 1fr 1fr; }
 
       .campaign-content { padding: 60px 32px; }
 
       #news { padding: 80px 32px; }
+
+      #faq { padding: 80px 32px; }
+
+      #awards { padding: 60px 32px; }
+      .awards-grid { gap: 24px 32px; }
+
       footer { padding: 60px 32px; }
 
       .instagram-grid { grid-template-columns: repeat(3, 1fr); }
@@ -1055,6 +1378,7 @@
       <li><a href="#salon">Salon</a></li>
       <li><a href="#campaign">Campaign</a></li>
       <li><a href="#news">News</a></li>
+      <li><a href="#faq">FAQ</a></li>
     </ul>
   </nav>
 
@@ -1104,6 +1428,10 @@
         <span class="reveal-line"><span class="reveal-inner">本質的な美しさを、</span></span>
         <span class="reveal-line"><span class="reveal-inner">デザインする。</span></span>
       </h2>
+      <!-- 定義文「LUXIA HAIRとは」 -->
+      <p class="concept-definition js-reveal">
+        LUXIA HAIRとは、表参道・銀座・名古屋栄・梅田・福岡天神の全国5都市に展開する高級ヘアサロンブランドです。経験豊富なスタイリストが一人ひとりの髪質・ライフスタイルに合わせた最適なヘアデザインをご提案します。
+      </p>
       <p class="concept-body js-reveal">
         LUXIA HAIRは、髪そのものの美しさを引き出すことを大切にしています。<br>
         一人ひとりのライフスタイルや価値観に寄り添い、<br>
@@ -1117,6 +1445,28 @@
     </div>
     <div class="concept-image-side js-reveal-image">
       <div class="concept-image-inner"></div>
+    </div>
+  </section>
+
+  <!-- STATS / 数字・実績データ -->
+  <section id="stats">
+    <div class="stats-grid">
+      <div class="stat-item js-stat">
+        <p class="stat-number">5<span>店舗</span></p>
+        <p class="stat-label">全国展開</p>
+      </div>
+      <div class="stat-item js-stat">
+        <p class="stat-number">45<span>名以上</span></p>
+        <p class="stat-label">在籍スタイリスト</p>
+      </div>
+      <div class="stat-item js-stat">
+        <p class="stat-number">5<span>万人/年</span></p>
+        <p class="stat-label">年間ご来店数</p>
+      </div>
+      <div class="stat-item js-stat">
+        <p class="stat-number">98<span>%</span></p>
+        <p class="stat-label">顧客満足度</p>
+      </div>
     </div>
   </section>
 
@@ -1220,6 +1570,80 @@
     </div>
   </section>
 
+  <!-- FAQ / よくある質問 -->
+  <section id="faq">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-heading">よくある質問</h2>
+    <div class="faq-list">
+
+      <div class="faq-item js-faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-label">Q.</span>
+          <span class="faq-q-text">LUXIA HAIRとはどのような美容院ですか？</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <span class="faq-a-label">A.</span>LUXIA HAIRとは、表参道・銀座・名古屋栄・梅田・福岡天神に展開する高級ヘアサロンです。スタイリスト45名以上が在籍し、年間5万人以上のお客様にご利用いただいています。カット・カラー・トリートメント・パーマの上質な技術と落ち着いた空間で、お客様一人ひとりの髪本来の美しさを引き出します。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item js-faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-label">Q.</span>
+          <span class="faq-q-text">初めての方向けのキャンペーンはありますか？</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <span class="faq-a-label">A.</span>はい。初めてご来店の方を対象に「プレミアム体験キャンペーン」を実施しています。カット＋カラー＋トリートメントのセットが通常¥18,700のところ¥13,200（税込）でご利用いただけます。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item js-faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-label">Q.</span>
+          <span class="faq-q-text">LUXIA HAIRの料金はどのくらいですか？</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <span class="faq-a-label">A.</span>カットは¥7,700（税込）〜、カラーは¥11,000（税込）〜、トリートメントは¥5,500（税込）〜となっています。初回ご来店の方は、カット＋カラー＋トリートメントのセットを¥13,200（税込）でご提供するキャンペーンも実施中です。詳しくはキャンペーンページをご覧ください。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item js-faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-label">Q.</span>
+          <span class="faq-q-text">予約方法を教えてください。</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <span class="faq-a-label">A.</span>LUXIA HAIRは完全予約制です。公式サイトのオンライン予約フォーム、またはお電話にてご予約いただけます。当日予約もお電話で承っておりますので、お気軽にお問い合わせください。各店舗の電話番号はサロンページにてご確認いただけます。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item js-faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-label">Q.</span>
+          <span class="faq-q-text">店舗はどこにありますか？</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer" role="region">
+          <div class="faq-answer-inner">
+            <span class="faq-a-label">A.</span>東京（表参道・銀座）、愛知（名古屋栄）、大阪（梅田）、福岡（天神）の全国5店舗を展開しています。いずれの店舗も主要駅から徒歩圏内にございます。2024年6月には札幌店もグランドオープン予定です。
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- INSTAGRAM -->
   <section id="instagram">
     <p class="section-label">FOLLOW US</p>
@@ -1231,6 +1655,75 @@
       <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/salon-bright.png" alt="" loading="lazy"></div>
       <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-short.png" alt="" loading="lazy"></div>
       <div class="ig-item"><img src="https://morimotogrowship-alt.github.io/hp_create_sample/hp_create_sample/%E3%83%AB%E3%82%B7%E3%82%A2%E3%81%AE%E9%AB%AA/assets/model-bob.png" alt="" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- AWARDS / 権威性シグナル -->
+  <section id="awards">
+    <div class="awards-inner">
+      <p class="section-label" style="margin-bottom: 0;">RECOGNITION</p>
+      <h2 class="awards-heading">受賞・メディア掲載実績</h2>
+
+      <div class="awards-grid">
+        <div class="award-item js-award-item">
+          <div class="award-badge">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <div class="award-text">
+            <p class="award-title">HOT PEPPER Beauty Award</p>
+            <p class="award-detail">Best Salon 2023 受賞</p>
+          </div>
+        </div>
+
+        <div class="award-item js-award-item">
+          <div class="award-badge">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="8" r="6"/>
+              <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+            </svg>
+          </div>
+          <div class="award-text">
+            <p class="award-title">Beauty Expert 認定サロン</p>
+            <p class="award-detail">日本ヘアデザイン協会 認定 2022</p>
+          </div>
+        </div>
+
+        <div class="award-item js-award-item">
+          <div class="award-badge">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div class="award-text">
+            <p class="award-title">顧客満足度 No.1</p>
+            <p class="award-detail">都内高級サロン調査 2023年</p>
+          </div>
+        </div>
+
+        <div class="award-item js-award-item">
+          <div class="award-badge">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <div class="award-text">
+            <p class="award-title">VOGUE JAPAN 掲載</p>
+            <p class="award-detail">2023年10月号 おすすめサロン特集</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="media-strip">
+        <p class="media-label">MEDIA FEATURES</p>
+        <span class="media-name">VOGUE Japan</span>
+        <span class="media-name">ELLE JAPON</span>
+        <span class="media-name">WWD Beauty</span>
+        <span class="media-name">美的</span>
+        <span class="media-name">MAQUIA</span>
+      </div>
     </div>
   </section>
 
@@ -1252,6 +1745,7 @@
         <a href="salon.html">Salon</a>
         <a href="campaign.html">Campaign</a>
         <a href="news.html">News</a>
+        <a href="#faq">FAQ</a>
       </div>
       <div class="footer-links">
         <a href="salon.html">表参道 / 銀座</a>
@@ -1335,8 +1829,38 @@
     }, observerOpts);
 
     document.querySelectorAll(
-      '.js-reveal, .js-reveal-heading, .js-reveal-image, .js-salon-card, .js-news-item'
+      '.js-reveal, .js-reveal-heading, .js-reveal-image, .js-salon-card, .js-news-item, .js-stat, .js-faq-item, .js-award-item'
     ).forEach(el => observer.observe(el));
+
+    // ===== FAQ ACCORDION =====
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const btn    = item.querySelector('.faq-question');
+      const answer = item.querySelector('.faq-answer');
+      const inner  = item.querySelector('.faq-answer-inner');
+
+      btn.addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+
+        // Close all others
+        document.querySelectorAll('.faq-item.open').forEach(other => {
+          if (other !== item) {
+            other.classList.remove('open');
+            other.querySelector('.faq-answer').style.maxHeight = '0';
+            other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        if (isOpen) {
+          item.classList.remove('open');
+          answer.style.maxHeight = '0';
+          btn.setAttribute('aria-expanded', 'false');
+        } else {
+          item.classList.add('open');
+          answer.style.maxHeight = inner.scrollHeight + 'px';
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
   </script>
 </body>
 </html>
