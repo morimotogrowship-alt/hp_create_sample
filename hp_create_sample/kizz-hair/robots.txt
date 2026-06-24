@@ -1,0 +1,41 @@
+# KIZZ HAIR robots.txt
+# 注意: example.com はデモ用の仮ドメインです。公開時に実ドメインへ差し替えてください。
+
+# 通常の検索エンジン
+User-agent: *
+Allow: /
+
+# AI検索 / 生成エンジン（GEO/AIO）— クロール・引用を許可
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# 管理・フォーム送信先などはクロール不要（例）
+Disallow: /thanks/
+Disallow: /*?*utm_
+
+# サイトマップ
+Sitemap: https://example.com/sitemap.xml
