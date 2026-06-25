@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JESSE BARBER | 男を、整える時間。高級メンズバーバーサロン</title>
+  <meta name="description" content="JESSE BARBERは、男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロンです。銀座・表参道・大阪北新地・名古屋栄・福岡天神の全国5店舗展開。">
+  <meta name="robots" content="index, follow">
+
+  <!-- OGP -->
+  <meta property="og:title" content="JESSE BARBER | 男を、整える時間。">
+  <meta property="og:description" content="JESSE BARBERは、男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロンです。全国5店舗展開。">
+  <meta property="og:image" content="images/og-top.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:site_name" content="JESSE BARBER">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="JESSE BARBER | 男を、整える時間。">
+  <meta name="twitter:description" content="JESSE BARBERは、男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロンです。全国5店舗展開。">
+  <meta name="twitter:image" content="images/og-top.jpg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;600;900&family=Noto+Sans+JP:wght@400;500&family=Playfair+Display+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== CSS Variables ===== */
+    :root {
+      --color-bg: #1C1D1F;
+      --color-bg-elevated: #202124;
+      --color-overlay: rgba(28, 29, 31, 0.95);
+      --color-text: #E8EAED;
+      --color-text-muted: #B8BBBF;
+      --color-accent: #F3A70D;
+      --color-accent-soft: rgba(243, 167, 13, 0.6);
+      --color-line: rgba(232, 234, 237, 0.15);
+      --font-display: "Grenze Gotisch", sans-serif;
+      --font-body: "Noto Sans JP", sans-serif;
+      --font-serif: "Playfair Display SC", serif;
+      --radius: 0px;
+      --lh-body: 2;
+      --sidebar-w: 200px;
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: var(--lh-body);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+      background-attachment: fixed;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* ===== Loading Overlay ===== */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--color-bg);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: opacity 0.6s ease;
+    }
+    #loading-overlay .logo-text {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      color: var(--color-text);
+      letter-spacing: 6px;
+      animation: logoIn 1.2s ease forwards;
+    }
+    #loading-overlay .logo-sub {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      color: var(--color-accent);
+      letter-spacing: 4px;
+      animation: logoIn 1.4s ease forwards;
+    }
+    #loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    @keyframes logoIn {
+      0% { opacity: 0; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ===== Sidebar Nav (PC) ===== */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--color-overlay);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      z-index: 900;
+      border-left: 1px solid var(--color-line);
+    }
+    #sidebar .sidebar-logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      color: var(--color-text);
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 40px;
+    }
+    #sidebar .sidebar-logo span {
+      display: block;
+      font-size: 0.55rem;
+      color: var(--color-accent);
+      letter-spacing: 2px;
+      margin-top: 4px;
+    }
+    #sidebar nav ul {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+    }
+    #sidebar nav ul li a {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      color: var(--color-text);
+      display: block;
+      text-align: center;
+      padding: 4px 0;
+      position: relative;
+    }
+    #sidebar nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 1px;
+      background: var(--color-accent);
+      transition: width 0.25s ease;
+    }
+    #sidebar nav ul li a:hover::after { width: 100%; }
+    #sidebar nav ul li a:hover { color: var(--color-accent); }
+    .sidebar-cta {
+      margin-top: auto;
+      width: 100%;
+    }
+    .btn-primary {
+      display: block;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      color: var(--color-text);
+      border: 1px solid var(--color-accent);
+      padding: 10px 16px;
+      transition: background 0.25s ease, color 0.25s ease;
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: rgba(243,167,13,0.12); color: var(--color-accent); }
+
+    /* ===== Hamburger (SP) ===== */
+    #hamburger {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--color-overlay);
+      border: 1px solid var(--color-line);
+      padding: 12px;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+    }
+    #hamburger span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: var(--color-text);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    #hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+    #hamburger.open span:nth-child(2) { opacity: 0; }
+    #hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+    /* ===== SP Full Menu ===== */
+    #sp-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--color-overlay);
+      z-index: 950;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+    }
+    #sp-menu.active { display: flex; }
+    #sp-menu a {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      color: var(--color-text);
+      transition: color 0.2s;
+    }
+    #sp-menu a:hover { color: var(--color-accent); }
+    #sp-menu .sp-book {
+      border: 1px solid var(--color-accent);
+      padding: 10px 32px;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-accent);
+    }
+
+    /* ===== Main (PC sidebar offset) ===== */
+    main { padding-right: var(--sidebar-w); }
+
+    /* ===== Fullscreen Scroll Snap ===== */
+    #fullscreen-wrap {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+    #fullscreen-wrap::-webkit-scrollbar { display: none; }
+    .fs-section {
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== FV ===== */
+    #fv {
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 80px;
+    }
+    .fv-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #2a1f0d 0%, #1C1D1F 60%, #111214 100%);
+    }
+    .fv-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(28,29,31,0.45);
+    }
+    /* Placeholder barber image via CSS */
+    .fv-img-placeholder {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.55;
+      overflow: hidden;
+    }
+    .fv-img-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .fv-content {
+      position: relative;
+      z-index: 2;
+      padding-left: clamp(32px, 6vw, 100px);
+    }
+    .fv-subtitle {
+      font-family: var(--font-display);
+      font-size: clamp(0.7rem, 1vw, 0.85rem);
+      color: var(--color-accent);
+      letter-spacing: 4px;
+      margin-bottom: 16px;
+    }
+    .fv-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 400;
+      color: var(--color-text);
+      letter-spacing: 2px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    .fv-title-ja {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 400;
+      color: var(--color-text-muted);
+      letter-spacing: 6px;
+      margin-bottom: 40px;
+    }
+    .fv-cta-group { display: flex; gap: 16px; align-items: center; }
+    .btn-outline {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-line);
+      padding: 10px 20px;
+      transition: border-color 0.25s, color 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--color-accent-soft); color: var(--color-text); }
+
+    /* Scroll Hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .scroll-hint span {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      color: var(--color-text-muted);
+    }
+    .scroll-arrow {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--color-accent));
+      animation: scrollBounce 1.6s ease-in-out infinite;
+    }
+    @keyframes scrollBounce {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* ===== Concept Section ===== */
+    #concept {
+      background: var(--color-bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .concept-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1100px;
+      padding: 0 clamp(32px, 5vw, 80px);
+      align-items: center;
+      width: 100%;
+    }
+    .concept-img {
+      height: 420px;
+      background: linear-gradient(160deg, #2e1f0b 0%, #1a130a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .concept-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--color-line);
+    }
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      color: var(--color-accent);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 400;
+      color: var(--color-text);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      position: relative;
+      display: inline-block;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: var(--color-accent);
+      margin-top: 10px;
+      width: 100%;
+    }
+    .section-body {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      line-height: var(--lh-body);
+      margin-top: 24px;
+    }
+    .what-is {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid var(--color-line);
+      font-size: 0.85rem;
+      color: var(--color-text);
+      line-height: 1.9;
+    }
+    .what-is strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      color: var(--color-accent);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--color-line);
+      margin-top: 48px;
+      border: 1px solid var(--color-line);
+    }
+    .stat-item {
+      background: var(--color-bg);
+      padding: 28px 16px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--color-accent);
+      display: block;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
+
+    /* ===== Menu Gallery (fullscreen) ===== */
+    #menu-gallery {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0;
+    }
+    .menu-gallery-header {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px 0 24px;
+    }
+    .menu-scroll-wrap {
+      width: 100%;
+      overflow-x: auto;
+      padding: 0 clamp(32px, 5vw, 80px) 32px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-accent) var(--color-bg-elevated);
+    }
+    .menu-scroll-wrap::-webkit-scrollbar { height: 2px; }
+    .menu-scroll-wrap::-webkit-scrollbar-track { background: var(--color-bg-elevated); }
+    .menu-scroll-wrap::-webkit-scrollbar-thumb { background: var(--color-accent); }
+    .menu-cards {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+    }
+    .menu-card {
+      width: 280px;
+      flex-shrink: 0;
+      border: 1px solid var(--color-line);
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+    .menu-card:hover { border-color: var(--color-accent-soft); }
+    .menu-card-img {
+      height: 220px;
+      background: linear-gradient(160deg, #2e1f0b 0%, #1a130a 100%);
+      position: relative;
+    }
+    .menu-card-img::before {
+      content: attr(data-label);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      letter-spacing: 2px;
+    }
+    .menu-card-body { padding: 20px; }
+    .menu-card-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-text);
+      margin-bottom: 6px;
+    }
+    .menu-card-desc {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .menu-card-price {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      color: var(--color-accent);
+      margin-top: 10px;
+    }
+
+    /* ===== Standard Section (below snap) ===== */
+    .std-section { padding: 100px clamp(32px, 5vw, 80px); max-width: calc(100% - var(--sidebar-w)); }
+    .std-section-inner { max-width: 1100px; margin: 0 auto; }
+    .std-section-header { text-align: center; margin-bottom: 60px; }
+
+    /* ===== Salon ===== */
+    .salon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .salon-card {
+      border: 1px solid var(--color-line);
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+    .salon-card:hover { border-color: var(--color-accent-soft); }
+    .salon-card-img {
+      height: 200px;
+      background: linear-gradient(160deg, #2b1e0e 0%, #1a130a 100%);
+      position: relative;
+    }
+    .salon-card-img::before {
+      content: attr(data-store);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      letter-spacing: 2px;
+    }
+    .salon-card-body { padding: 20px; }
+    .salon-card-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-text);
+      margin-bottom: 6px;
+    }
+    .salon-card-desc {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+    .salon-card-link {
+      display: inline-block;
+      margin-top: 12px;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      color: var(--color-accent);
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--color-accent-soft);
+      padding-bottom: 2px;
+    }
+    .salon-card-span2 { grid-column: span 2; }
+
+    /* ===== Campaign ===== */
+    #campaign { background: var(--color-bg-elevated); }
+    .campaign-box {
+      border: 1px solid var(--color-line);
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .campaign-tag {
+      display: inline-block;
+      border: 1px solid var(--color-accent);
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      color: var(--color-accent);
+      letter-spacing: 2px;
+      padding: 3px 10px;
+      margin-bottom: 16px;
+    }
+    .campaign-name {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+    .campaign-price {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+    .campaign-price .new-price {
+      font-size: 1.6rem;
+      color: var(--color-accent);
+      margin-left: 8px;
+    }
+    .campaign-note {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+    }
+    .campaign-img {
+      height: 240px;
+      background: linear-gradient(160deg, #2e1f0b 0%, #1a130a 100%);
+    }
+
+    /* ===== News ===== */
+    .news-list { display: flex; flex-direction: column; gap: 0; }
+    .news-item {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--color-line);
+      align-items: baseline;
+    }
+    .news-date {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+    }
+    .news-title {
+      font-size: 0.9rem;
+      color: var(--color-text);
+      transition: color 0.2s;
+    }
+    .news-title:hover { color: var(--color-accent); }
+    .news-more {
+      display: inline-block;
+      margin-top: 32px;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      letter-spacing: 2px;
+      border-bottom: 1px solid var(--color-accent-soft);
+      padding-bottom: 3px;
+    }
+
+    /* ===== FAQ ===== */
+    #faq { background: var(--color-bg-elevated); }
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item {
+      border-bottom: 1px solid var(--color-line);
+      overflow: hidden;
+    }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--color-text);
+      gap: 16px;
+    }
+    .faq-question:hover { color: var(--color-accent); }
+    .faq-q-mark {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--color-accent);
+      flex-shrink: 0;
+    }
+    .faq-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      position: relative;
+    }
+    .faq-icon::before, .faq-icon::after {
+      content: '';
+      position: absolute;
+      background: var(--color-accent);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .faq-icon::before { width: 18px; height: 1px; top: 8px; left: 0; }
+    .faq-icon::after { width: 1px; height: 18px; top: 0; left: 8px; }
+    .faq-item.open .faq-icon::after { transform: rotate(90deg); opacity: 0; }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+    .faq-answer-inner {
+      padding: 0 0 24px 28px;
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      line-height: 1.9;
+    }
+    .faq-item.open .faq-answer { max-height: 400px; }
+
+    /* ===== Instagram ===== */
+    .insta-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+    }
+    .insta-cell {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #2e1f0b 0%, #1C1D1F 100%);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .insta-cell::before {
+      content: attr(data-n);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+    }
+    .insta-cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(243,167,13,0.1);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .insta-cell:hover::after { opacity: 1; }
+    .insta-handle {
+      text-align: center;
+      margin-top: 20px;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      color: var(--color-accent);
+      letter-spacing: 2px;
+    }
+
+    /* ===== Awards / Media ===== */
+    #awards { border-top: 1px solid var(--color-line); }
+    .awards-note {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      margin-bottom: 32px;
+    }
+    .awards-grid {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .award-badge {
+      border: 1px solid var(--color-line);
+      padding: 16px 24px;
+      text-align: center;
+      min-width: 160px;
+    }
+    .award-badge-title {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      letter-spacing: 1px;
+    }
+    .award-badge-sub {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    /* ===== Reserve CTA ===== */
+    #reserve-cta {
+      text-align: center;
+      padding: 100px clamp(32px, 5vw, 80px);
+      background: linear-gradient(160deg, #1e160a 0%, var(--color-bg) 100%);
+    }
+    .reserve-cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+    .reserve-cta-sub {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-bottom: 40px;
+    }
+    .reserve-cta-btns { display: flex; gap: 16px; justify-content: center; }
+    .reserve-tel {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+      border: 1px solid var(--color-line);
+      padding: 10px 24px;
+      transition: border-color 0.25s;
+    }
+    .reserve-tel:hover { border-color: var(--color-accent-soft); color: var(--color-text); }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--color-bg-elevated);
+      border-top: 1px solid var(--color-line);
+      padding: 64px clamp(32px, 5vw, 80px) 40px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 60px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--color-line);
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      letter-spacing: 3px;
+      color: var(--color-text);
+    }
+    .footer-brand-sub {
+      font-size: 0.65rem;
+      color: var(--color-accent);
+      letter-spacing: 2px;
+      margin-top: 4px;
+    }
+    .footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 28px;
+    }
+    .footer-nav a {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .footer-nav a:hover { color: var(--color-accent); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+    }
+    .footer-sns { display: flex; gap: 16px; }
+    .footer-sns a {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .footer-sns a:hover { color: var(--color-accent); }
+
+    /* ===== SP Fixed Bottom CTA ===== */
+    #sp-bottom-cta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 800;
+      background: var(--color-overlay);
+      border-top: 1px solid var(--color-line);
+    }
+    #sp-bottom-cta a {
+      display: block;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      color: var(--color-bg);
+      background: var(--color-accent);
+      padding: 16px;
+    }
+
+    /* ===== Animations ===== */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1023px) {
+      #sidebar { display: none; }
+      #hamburger { display: flex; }
+      #sp-bottom-cta { display: block; }
+      main { padding-right: 0; padding-bottom: 60px; }
+      .std-section { max-width: 100%; }
+      .concept-inner { grid-template-columns: 1fr; gap: 40px; }
+      .concept-img { height: 280px; }
+      .salon-grid { grid-template-columns: 1fr 1fr; }
+      .salon-card-span2 { grid-column: span 1; }
+      .campaign-box { grid-template-columns: 1fr; gap: 28px; }
+      .campaign-img { height: 200px; }
+      .insta-grid { grid-template-columns: repeat(3, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 767px) {
+      .fv-title { font-size: 2.4rem; }
+      .salon-grid { grid-template-columns: 1fr; }
+      .salon-card-span2 { grid-column: span 1; }
+      .news-item { grid-template-columns: 1fr; gap: 6px; }
+      .awards-grid { flex-direction: column; align-items: center; }
+      .reserve-cta-btns { flex-direction: column; align-items: center; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://example.com/#website",
+        "url": "https://example.com/",
+        "name": "JESSE BARBER",
+        "description": "男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロン",
+        "inLanguage": "ja"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://example.com/#webpage",
+        "url": "https://example.com/",
+        "name": "JESSE BARBER | 男を、整える時間。",
+        "isPartOf": { "@id": "https://example.com/#website" },
+        "description": "JESSE BARBERは、男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロンです。銀座・表参道・大阪北新地・名古屋栄・福岡天神の全国5店舗展開。",
+        "inLanguage": "ja"
+      },
+      {
+        "@type": "HairSalon",
+        "@id": "https://example.com/#business",
+        "name": "JESSE BARBER",
+        "description": "男性の身だしなみを上質な体験に変える高級メンズバーバーサロン。全国5店舗展開。",
+        "url": "https://example.com/",
+        "logo": "https://example.com/images/logo.png",
+        "sameAs": [
+          "https://www.instagram.com/jesse_barber_official/",
+          "https://www.facebook.com/",
+          "https://twitter.com/",
+          "https://www.youtube.com/"
+        ],
+        "numberOfEmployees": { "@type": "QuantitativeValue", "value": 35 },
+        "areaServed": "JP",
+        "priceRange": "¥¥¥"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "JESSE BARBERとはどのようなサロンですか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "JESSE BARBERとは、男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロンです。銀座・表参道・大阪北新地・名古屋栄・福岡天神の全国5店舗で展開しており、シグネチャーカットからロイヤルシェービング、ヘッドスパまで幅広いグルーミングサービスを提供しています。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "初めてでも利用できますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "はい、もちろんです。初めてご来店のお客様も大歓迎です。完全予約制のため、事前にウェブ予約またはお電話にてご予約ください。ご来店時にご要望・お悩みをカウンセリングさせていただきます。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "初めての方向けのキャンペーンはありますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "はい、初回グルーミング体験として「シグネチャーカット＋ロイヤルシェーブ」を通常¥9,900のところ¥6,600（税込）でご提供しています。初回限定・対象店舗での適用となります（他サービスとの併用不可）。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "JESSE BARBERの料金はどのくらいですか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "シグネチャーカットが¥6,600（税込）〜、カット＆ロイヤルシェーブが¥9,900（税込）〜、ロイヤルシェーブ単品が¥5,500（税込）〜、グレーカラーが¥7,700（税込）〜、ヘッドスパが¥4,400（税込）〜となっています。フルグルーミングのVIPコースは要相談です。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "予約方法を教えてください。",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "完全予約制となっております。ウェブサイトの予約フォームからオンライン予約が可能です。また、各店舗へのお電話でのご予約も承っています。当日の電話予約につきましては、空きがある場合のみ対応しております。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ===== Loading Overlay ===== -->
+  <div id="loading-overlay" role="status" aria-label="読み込み中">
+    <div class="logo-text">JESSE BARBER</div>
+    <div class="logo-sub">THE ART OF THE GENTLEMAN'S GROOMING</div>
+  </div>
+
+  <!-- ===== Sidebar (PC) ===== -->
+  <aside id="sidebar" aria-label="サイドナビゲーション">
+    <div class="sidebar-logo">
+      JESSE BARBER
+      <span>SINCE 2020</span>
+    </div>
+    <nav aria-label="グローバルナビ">
+      <ul>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="concept.html">CONCEPT</a></li>
+        <li><a href="menu.html">MENU</a></li>
+        <li><a href="salon.html">SALON</a></li>
+        <li><a href="campaign.html">CAMPAIGN</a></li>
+        <li><a href="news.html">NEWS</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="reserve.html">RESERVE</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-cta">
+      <a href="reserve.html" class="btn-primary">BOOK</a>
+    </div>
+  </aside>
+
+  <!-- ===== Hamburger (SP) ===== -->
+  <button id="hamburger" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- ===== SP Full Menu ===== -->
+  <div id="sp-menu" role="dialog" aria-label="モバイルメニュー">
+    <a href="index.html">HOME</a>
+    <a href="concept.html">CONCEPT</a>
+    <a href="menu.html">MENU</a>
+    <a href="salon.html">SALON</a>
+    <a href="campaign.html">CAMPAIGN</a>
+    <a href="news.html">NEWS</a>
+    <a href="faq.html">FAQ</a>
+    <a href="reserve.html" class="sp-book">BOOK / ご予約</a>
+  </div>
+
+  <!-- ===== Main ===== -->
+  <main>
+
+    <!-- Fullscreen Snap Sections -->
+    <div id="fullscreen-wrap" aria-label="メインビジュアル">
+
+      <!-- Section 1: FV -->
+      <section id="fv" class="fs-section" aria-label="ファーストビュー">
+        <div class="fv-bg" aria-hidden="true"></div>
+        <div class="fv-img-placeholder" aria-hidden="true">
+          <img src="images/hero-ginza-shave.png" alt="銀座店でロイヤルシェービングを受ける男性">
+        </div>
+        <!-- キャプション: JESSE 銀座 — Royal Shave -->
+        <div class="fv-content">
+          <p class="fv-subtitle">THE ART OF THE GENTLEMAN'S GROOMING</p>
+          <h1 class="fv-title">JESSE BARBER</h1>
+          <p class="fv-title-ja">男を、整える時間。</p>
+          <div class="fv-cta-group">
+            <a href="reserve.html" class="btn-primary">BOOK / ご予約はこちら</a>
+            <a href="tel:0300000000" class="btn-outline">TEL / 電話する</a>
+          </div>
+        </div>
+        <div class="scroll-hint" aria-hidden="true">
+          <span>SCROLL</span>
+          <div class="scroll-arrow"></div>
+        </div>
+      </section>
+
+      <!-- Section 2: Concept -->
+      <section id="concept" class="fs-section" aria-label="コンセプト">
+        <div class="concept-inner">
+          <div class="concept-img" aria-hidden="true" style="padding:0; overflow:hidden;">
+            <img src="images/concept-interior.png" alt="JESSE BARBERの落ち着いた店内空間" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="concept-text">
+            <p class="section-label">CONCEPT</p>
+            <h2 class="section-title">JESSE BARBERとは</h2>
+            <div class="what-is">
+              <strong>WHAT IS JESSE BARBER</strong>
+              JESSE BARBERとは、男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロンです。
+              熟練バーバーによるシグネチャーカットとクラシックシェービングを軸に、男の身だしなみを丁寧な所作と静謐な空間で仕上げます。
+            </div>
+            <p class="section-body">
+              完全予約制の静謐な空間で、骨格・髪質・ライフスタイルに向き合う。接待前の身だしなみ、節目の一日、自己投資の時間——JESSE BARBERは、そのすべてに応えるバーバーサロンです。
+            </p>
+            <a href="concept.html" class="news-more">READ MORE</a>
+          </div>
+        </div>
+        <div class="scroll-hint" aria-hidden="true">
+          <span>SCROLL</span>
+          <div class="scroll-arrow"></div>
+        </div>
+      </section>
+
+      <!-- Section 3: Menu Gallery intro -->
+      <section id="menu-gallery" class="fs-section" aria-label="メニューギャラリー">
+        <div class="menu-gallery-header">
+          <p class="section-label">MENU</p>
+          <h2 class="section-title">GROOMING MENU</h2>
+        </div>
+        <div class="menu-scroll-wrap">
+          <ul class="menu-cards" role="list">
+            <li class="menu-card">
+              <div class="menu-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+                <img src="images/menu-signature-cut.png" alt="バーバーがハサミでメンズカットを行う施術写真" style="width:100%;height:100%;object-fit:cover;">
+              </div>
+              <div class="menu-card-body">
+                <h3 class="menu-card-name">Signature Cut</h3>
+                <p class="menu-card-desc">骨格・髪質・ライフスタイルに合わせたシグネチャーカット。シャンプー・スタイリング込み。</p>
+                <p class="menu-card-price">¥6,600〜</p>
+              </div>
+            </li>
+            <li class="menu-card">
+              <div class="menu-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+                <img src="images/hero-ginza-shave.png" alt="カットとシェービングを組み合わせた施術" style="width:100%;height:100%;object-fit:cover;">
+              </div>
+              <div class="menu-card-body">
+                <h3 class="menu-card-name">Cut & Royal Shave</h3>
+                <p class="menu-card-desc">カットに熱々のスチームタオルとシェービングを組み合わせた看板コース。</p>
+                <p class="menu-card-price">¥9,900〜</p>
+              </div>
+            </li>
+            <li class="menu-card">
+              <div class="menu-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+                <img src="images/menu-royal-shave.png" alt="クラシックシェービング施術中の男性" style="width:100%;height:100%;object-fit:cover;">
+              </div>
+              <div class="menu-card-body">
+                <h3 class="menu-card-name">Royal Shave</h3>
+                <p class="menu-card-desc">顔そり・髭デザインに特化したクラシックシェービング単品。</p>
+                <p class="menu-card-price">¥5,500〜</p>
+              </div>
+            </li>
+            <li class="menu-card">
+              <div class="menu-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+                <img src="images/menu-signature-cut.png" alt="白髪染めグレーカラー施術" style="width:100%;height:100%;object-fit:cover;object-position:top;">
+              </div>
+              <div class="menu-card-body">
+                <h3 class="menu-card-name">Gray Color</h3>
+                <p class="menu-card-desc">白髪を自然になじませる低刺激メンズグレーカラー。</p>
+                <p class="menu-card-price">¥7,700〜</p>
+              </div>
+            </li>
+            <li class="menu-card">
+              <div class="menu-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+                <img src="images/campaign-first.png" alt="ヘッドスパ施術中の男性" style="width:100%;height:100%;object-fit:cover;">
+              </div>
+              <div class="menu-card-body">
+                <h3 class="menu-card-name">Head Spa</h3>
+                <p class="menu-card-desc">頭皮環境を整えるスキャルプヘッドスパ（炭酸／クレンジング）。</p>
+                <p class="menu-card-price">¥4,400〜</p>
+              </div>
+            </li>
+            <li class="menu-card">
+              <div class="menu-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+                <img src="images/menu-royal-shave.png" alt="VIPフルグルーミングコース施術" style="width:100%;height:100%;object-fit:cover;object-position:right;">
+              </div>
+              <div class="menu-card-body">
+                <h3 class="menu-card-name">VIP Course</h3>
+                <p class="menu-card-desc">カット＋ロイヤルシェーブ＋ヘッドスパのフルグルーミング。</p>
+                <p class="menu-card-price">価格は要相談</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div style="text-align:center; margin-top: 16px;">
+          <a href="menu.html" class="btn-primary" style="display:inline-block;">VIEW ALL MENUS</a>
+        </div>
+        <div class="scroll-hint" aria-hidden="true">
+          <span>SCROLL</span>
+          <div class="scroll-arrow"></div>
+        </div>
+      </section>
+
+    </div><!-- /fullscreen-wrap -->
+
+    <!-- ===== Salon ===== -->
+    <section class="std-section" id="salon" aria-label="サロン情報">
+      <div class="std-section-inner">
+        <div class="std-section-header fade-in-up">
+          <p class="section-label">SALON</p>
+          <h2 class="section-title">OUR SALONS</h2>
+        </div>
+        <div class="salon-grid">
+          <div class="salon-card fade-in-up">
+            <div class="salon-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+              <img src="images/salon-ginza.png" alt="JESSE銀座旗艦店の内観" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div class="salon-card-body">
+              <h3 class="salon-card-name">JESSE 銀座</h3>
+              <p class="salon-card-desc">東京・銀座の旗艦店。完全個室を備えたフラッグシップバーバー。</p>
+              <a href="salon.html#ginza" class="salon-card-link">DETAIL →</a>
+            </div>
+          </div>
+          <div class="salon-card fade-in-up">
+            <div class="salon-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+              <img src="images/concept-interior.png" alt="JESSE表参道店の内観" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div class="salon-card-body">
+              <h3 class="salon-card-name">JESSE 表参道</h3>
+              <p class="salon-card-desc">東京・表参道店。デザイン性の高い内装で20〜40代に支持されるサロン。</p>
+              <a href="salon.html#omotesando" class="salon-card-link">DETAIL →</a>
+            </div>
+          </div>
+          <div class="salon-card fade-in-up">
+            <div class="salon-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+              <img src="images/salon-ginza.png" alt="JESSE大阪北新地店の内観" style="width:100%;height:100%;object-fit:cover;object-position:left;">
+            </div>
+            <div class="salon-card-body">
+              <h3 class="salon-card-name">JESSE 大阪北新地</h3>
+              <p class="salon-card-desc">大阪・北新地店。会食前後の身だしなみ需要に応えるエグゼクティブ向け店舗。</p>
+              <a href="salon.html#osaka" class="salon-card-link">DETAIL →</a>
+            </div>
+          </div>
+          <div class="salon-card fade-in-up">
+            <div class="salon-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+              <img src="images/concept-interior.png" alt="JESSE名古屋栄店の内観" style="width:100%;height:100%;object-fit:cover;object-position:right;">
+            </div>
+            <div class="salon-card-body">
+              <h3 class="salon-card-name">JESSE 名古屋栄</h3>
+              <p class="salon-card-desc">愛知・栄店。中部エリアのビジネスマンに人気のメンズバーバー。</p>
+              <a href="salon.html#nagoya" class="salon-card-link">DETAIL →</a>
+            </div>
+          </div>
+          <div class="salon-card fade-in-up">
+            <div class="salon-card-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+              <img src="images/salon-ginza.png" alt="JESSE福岡天神店の内観" style="width:100%;height:100%;object-fit:cover;object-position:center;">
+            </div>
+            <div class="salon-card-body">
+              <h3 class="salon-card-name">JESSE 福岡天神</h3>
+              <p class="salon-card-desc">福岡・天神店。九州エリアのフラッグシップバーバーショップ。</p>
+              <a href="salon.html#fukuoka" class="salon-card-link">DETAIL →</a>
+            </div>
+          </div>
+          <div class="salon-card fade-in-up" style="display:flex; align-items:center; justify-content:center; padding:32px; border:1px solid var(--color-line);">
+            <div style="text-align:center;">
+              <p style="font-family:var(--font-display); font-size:0.7rem; color:var(--color-accent); letter-spacing:2px; margin-bottom:12px;">ALL SALONS</p>
+              <a href="salon.html" class="btn-primary">店舗一覧を見る</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Stats ===== -->
+    <div style="padding: 0 clamp(32px, 5vw, 80px) 100px; max-width: calc(100% - var(--sidebar-w));">
+      <div style="max-width:1100px; margin:0 auto;">
+        <p style="text-align:center; font-size:0.65rem; color:var(--color-text-muted); margin-bottom:4px;">※デモ用数値。実案件では実データへ差し替え。</p>
+        <div class="stats-grid fade-in-up" aria-label="実績数値">
+          <div class="stat-item">
+            <span class="stat-num">5</span>
+            <p class="stat-label">全国店舗数</p>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">35<span style="font-size:1rem;">名以上</span></span>
+            <p class="stat-label">在籍バーバー</p>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">6<span style="font-size:1rem;">万人</span><span style="font-size:0.7rem; color:var(--color-text-muted);">/年</span></span>
+            <p class="stat-label">年間ご来店数</p>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">97<span style="font-size:1rem;">%</span></span>
+            <p class="stat-label">顧客満足度</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Campaign ===== -->
+    <section class="std-section" id="campaign" aria-label="キャンペーン">
+      <div class="std-section-inner">
+        <div class="std-section-header fade-in-up">
+          <p class="section-label">CAMPAIGN</p>
+          <h2 class="section-title">CURRENT CAMPAIGN</h2>
+        </div>
+        <div class="campaign-box fade-in-up">
+          <div>
+            <p class="campaign-tag">初回限定</p>
+            <h3 class="campaign-name">初回グルーミング体験</h3>
+            <p style="font-size:0.85rem; color:var(--color-text-muted); margin-bottom:16px;">シグネチャーカット＋ロイヤルシェーブ</p>
+            <div class="campaign-price">
+              通常 <s style="color:var(--color-text-muted);">¥9,900</s>
+              <span class="new-price">¥6,600</span>
+              <span style="font-size:0.7rem; color:var(--color-text-muted);">（税込）</span>
+            </div>
+            <p class="campaign-note">※初回限定・対象店舗のみ適用。他サービスとの併用不可。<br>※デモ用。実案件では実データへ差し替え。</p>
+            <a href="reserve.html" class="btn-primary" style="display:inline-block; margin-top:24px;">BOOK THIS CAMPAIGN</a>
+          </div>
+          <div class="campaign-img" aria-hidden="true" style="padding:0;overflow:hidden;">
+            <img src="images/campaign-first.png" alt="初回グルーミング体験キャンペーンビジュアル" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:32px;">
+          <a href="campaign.html" class="news-more">ALL CAMPAIGNS →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== News ===== -->
+    <section class="std-section" id="news" aria-label="お知らせ">
+      <div class="std-section-inner">
+        <div class="std-section-header fade-in-up">
+          <p class="section-label">NEWS</p>
+          <h2 class="section-title">LATEST NEWS</h2>
+        </div>
+        <ul class="news-list fade-in-up" role="list">
+          <li class="news-item">
+            <time class="news-date" datetime="2026-06-20">2026.06.20</time>
+            <a href="news-detail.html" class="news-title">年末メンテナンス予約受付開始</a>
+          </li>
+          <li class="news-item">
+            <time class="news-date" datetime="2026-06-10">2026.06.10</time>
+            <a href="news-detail.html" class="news-title">JESSE 仙台店 7/1(水) グランドオープン</a>
+          </li>
+          <li class="news-item">
+            <time class="news-date" datetime="2026-05-28">2026.05.28</time>
+            <a href="news-detail.html" class="news-title">夏季ヘッドスパキャンペーンのお知らせ</a>
+          </li>
+        </ul>
+        <a href="news.html" class="news-more">ALL NEWS →</a>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="std-section" id="faq" aria-label="よくある質問">
+      <div class="std-section-inner">
+        <div class="std-section-header fade-in-up">
+          <p class="section-label">FAQ</p>
+          <h2 class="section-title">FREQUENTLY ASKED QUESTIONS</h2>
+        </div>
+        <div class="faq-list fade-in-up" role="list">
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false">
+              <span class="faq-q-mark">Q</span>
+              <span style="flex:1;">JESSE BARBERとはどのようなサロンですか？</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer" role="region">
+              <div class="faq-answer-inner">
+                JESSE BARBERとは、男性の身だしなみを上質な体験に変えることを目指す高級メンズバーバーサロンです。銀座・表参道・大阪北新地・名古屋栄・福岡天神の全国5店舗で展開しており、シグネチャーカットからロイヤルシェービング、ヘッドスパまで幅広いグルーミングサービスを提供しています。
+              </div>
+            </div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false">
+              <span class="faq-q-mark">Q</span>
+              <span style="flex:1;">初めてでも利用できますか？</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer" role="region">
+              <div class="faq-answer-inner">
+                はい、もちろんです。初めてご来店のお客様も大歓迎です。完全予約制のため、事前にウェブ予約またはお電話にてご予約ください。ご来店時にご要望・お悩みをカウンセリングさせていただきます。
+              </div>
+            </div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false">
+              <span class="faq-q-mark">Q</span>
+              <span style="flex:1;">初めての方向けのキャンペーンはありますか？</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer" role="region">
+              <div class="faq-answer-inner">
+                はい、初回グルーミング体験として「シグネチャーカット＋ロイヤルシェーブ」を通常¥9,900のところ¥6,600（税込）でご提供しています。初回限定・対象店舗での適用となります（他サービスとの併用不可）。
+              </div>
+            </div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false">
+              <span class="faq-q-mark">Q</span>
+              <span style="flex:1;">JESSE BARBERの料金はどのくらいですか？</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer" role="region">
+              <div class="faq-answer-inner">
+                シグネチャーカットが¥6,600〜、カット＆ロイヤルシェーブが¥9,900〜、ロイヤルシェーブ単品が¥5,500〜、グレーカラーが¥7,700〜、ヘッドスパが¥4,400〜（すべて税込）です。フルグルーミングのVIPコースは要相談となります。
+              </div>
+            </div>
+          </div>
+          <div class="faq-item" role="listitem">
+            <button class="faq-question" aria-expanded="false">
+              <span class="faq-q-mark">Q</span>
+              <span style="flex:1;">予約方法を教えてください。</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-answer" role="region">
+              <div class="faq-answer-inner">
+                完全予約制となっております。ウェブサイトの予約フォームからオンライン予約が可能です。また、各店舗へのお電話でのご予約も承っています。当日の電話予約につきましては、空きがある場合のみ対応しております。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:32px;">
+          <a href="faq.html" class="news-more">MORE FAQ →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Instagram Feed ===== -->
+    <section class="std-section" id="instagram" aria-label="Instagram">
+      <div class="std-section-inner">
+        <div class="std-section-header fade-in-up">
+          <p class="section-label">INSTAGRAM</p>
+          <h2 class="section-title">@jesse_barber_official</h2>
+        </div>
+        <div class="insta-grid fade-in-up" role="list" aria-label="Instagramフィード（デモ用）">
+          <div class="insta-cell" data-n="01" role="listitem" aria-label="Instagram投稿1（デモ用画像）">
+            <!-- 画像仕様: ファイル名: insta-01.jpg / alt: バーバーによるカット施術風景 -->
+          </div>
+          <div class="insta-cell" data-n="02" role="listitem" aria-label="Instagram投稿2（デモ用画像）">
+            <!-- 画像仕様: ファイル名: insta-02.jpg / alt: シェービング道具のディテール -->
+          </div>
+          <div class="insta-cell" data-n="03" role="listitem" aria-label="Instagram投稿3（デモ用画像）">
+            <!-- 画像仕様: ファイル名: insta-03.jpg / alt: 店内の落ち着いた照明と鏡 -->
+          </div>
+          <div class="insta-cell" data-n="04" role="listitem" aria-label="Instagram投稿4（デモ用画像）">
+            <!-- 画像仕様: ファイル名: insta-04.jpg / alt: メンズヘアスタイル完成後の後ろ姿 -->
+          </div>
+          <div class="insta-cell" data-n="05" role="listitem" aria-label="Instagram投稿5（デモ用画像）">
+            <!-- 画像仕様: ファイル名: insta-05.jpg / alt: タオルと真鍮カミソリのディテール -->
+          </div>
+          <div class="insta-cell" data-n="06" role="listitem" aria-label="Instagram投稿6（デモ用画像）">
+            <!-- 画像仕様: ファイル名: insta-06.jpg / alt: バーバーポートレート -->
+          </div>
+        </div>
+        <p class="insta-handle">
+          <a href="https://www.instagram.com/jesse_barber_official/" target="_blank" rel="noopener noreferrer">
+            → Follow on Instagram
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== Awards / Media ===== -->
+    <section class="std-section" id="awards" aria-label="受賞・メディア掲載">
+      <div class="std-section-inner">
+        <div class="std-section-header fade-in-up">
+          <p class="section-label">PRESS &amp; AWARDS</p>
+          <h2 class="section-title">MEDIA &amp; RECOGNITION</h2>
+        </div>
+        <p class="awards-note">※以下はデモ用掲載情報です。実案件では実データへ差し替えてください。</p>
+        <div class="awards-grid fade-in-up">
+          <div class="award-badge">
+            <p class="award-badge-title">MEN'S GROOMING AWARD</p>
+            <p class="award-badge-sub">メンズグルーミング誌 / 2025</p>
+          </div>
+          <div class="award-badge">
+            <p class="award-badge-title">BEST BARBER SHOP</p>
+            <p class="award-badge-sub">地域情報誌 / 2024</p>
+          </div>
+          <div class="award-badge">
+            <p class="award-badge-title">FEATURED IN</p>
+            <p class="award-badge-sub">BRUTUS / POPEYE（デモ）</p>
+          </div>
+          <div class="award-badge">
+            <p class="award-badge-title">RANKING 1st</p>
+            <p class="award-badge-sub">都内メンズバーバー / 2025（デモ）</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Reserve CTA ===== -->
+    <section id="reserve-cta" aria-label="ご予約">
+      <p class="section-label" style="margin-bottom:12px;">RESERVE</p>
+      <h2 class="reserve-cta-title">ご予約はこちら</h2>
+      <p class="reserve-cta-sub">完全予約制。オンライン・お電話にてお気軽にどうぞ。</p>
+      <div class="reserve-cta-btns">
+        <a href="reserve.html" class="btn-primary">BOOK ONLINE / ウェブ予約</a>
+        <a href="tel:0300000000" class="reserve-tel">TEL / 各店舗に電話する</a>
+      </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div>
+            <p class="footer-brand">JESSE BARBER</p>
+            <p class="footer-brand-sub">THE ART OF THE GENTLEMAN'S GROOMING</p>
+          </div>
+          <nav aria-label="フッターナビ">
+            <ul class="footer-nav">
+              <li><a href="index.html">HOME</a></li>
+              <li><a href="concept.html">CONCEPT</a></li>
+              <li><a href="menu.html">MENU</a></li>
+              <li><a href="salon.html">SALON</a></li>
+              <li><a href="campaign.html">CAMPAIGN</a></li>
+              <li><a href="news.html">NEWS</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="reserve.html">RESERVE</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-copy">© JESSE BARBER All Rights Reserved.</p>
+          <div class="footer-sns" aria-label="SNSリンク">
+            <a href="https://www.instagram.com/jesse_barber_official/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">X</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">YouTube</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- SP Fixed Bottom CTA -->
+  <div id="sp-bottom-cta" aria-label="予約ボタン（モバイル）">
+    <a href="reserve.html">BOOK / ご予約はこちら</a>
+  </div>
+
+  <script>
+    // ===== Loading Overlay =====
+    (function () {
+      const overlay = document.getElementById('loading-overlay');
+      const key = 'jb_loaded';
+      if (sessionStorage.getItem(key)) {
+        overlay.style.display = 'none';
+        return;
+      }
+      setTimeout(function () {
+        overlay.classList.add('hidden');
+        setTimeout(function () {
+          overlay.style.display = 'none';
+        }, 700);
+        sessionStorage.setItem(key, '1');
+      }, 1800);
+    })();
+
+    // ===== Hamburger Menu =====
+    const ham = document.getElementById('hamburger');
+    const spMenu = document.getElementById('sp-menu');
+    ham.addEventListener('click', function () {
+      const isOpen = spMenu.classList.toggle('active');
+      ham.classList.toggle('open', isOpen);
+      ham.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    spMenu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        spMenu.classList.remove('active');
+        ham.classList.remove('open');
+        ham.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // ===== FAQ Accordion =====
+    document.querySelectorAll('.faq-question').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+
+    // ===== Scroll Fade-in =====
+    const fadeEls = document.querySelectorAll('.fade-in-up');
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    fadeEls.forEach(function (el) { observer.observe(el); });
+  </script>
+</body>
+</html>
