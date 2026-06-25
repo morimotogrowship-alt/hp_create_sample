@@ -927,7 +927,7 @@
       #sp-bottom-cta { display: block; }
       main { padding-right: 0; padding-bottom: 60px; }
       .std-section { max-width: 100%; }
-      .concept-inner { grid-template-columns: 1fr; gap: 40px; }
+      .concept-inner { grid-template-columns: 1fr; gap: 24px; padding-top: 72px; }
       .concept-img { height: 280px; }
       .salon-grid { grid-template-columns: 1fr 1fr; }
       .salon-card-span2 { grid-column: span 1; }
@@ -936,6 +936,8 @@
       .insta-grid { grid-template-columns: repeat(3, 1fr); }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      /* scroll-hint をSP底部CTAの上に逃がす */
+      .scroll-hint { bottom: 72px; }
     }
     @media (max-width: 767px) {
       .fv-title { font-size: 2.4rem; }
