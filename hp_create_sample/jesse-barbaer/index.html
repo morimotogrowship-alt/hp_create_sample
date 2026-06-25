@@ -927,8 +927,21 @@
       #sp-bottom-cta { display: block; }
       main { padding-right: 0; padding-bottom: 60px; }
       .std-section { max-width: 100%; }
-      .concept-inner { grid-template-columns: 1fr; gap: 24px; padding-top: 72px; }
-      .concept-img { height: 280px; }
+      /* Conceptセクション：ハンバーガー分の余白を確保して縦中央揃え */
+      #concept {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 64px;
+        padding-bottom: 72px;
+        box-sizing: border-box;
+      }
+      .concept-inner { grid-template-columns: 1fr; gap: 24px; }
+      .concept-img { height: 240px; }
+      /* scroll-hint はSPでは非表示（予約CTAと重なるため） */
+      .scroll-hint { display: none; }
+      /* menu-galleryのVIEW ALLボタン下に余白 */
+      #menu-gallery { padding-bottom: 72px; box-sizing: border-box; }
       .salon-grid { grid-template-columns: 1fr 1fr; }
       .salon-card-span2 { grid-column: span 1; }
       .campaign-box { grid-template-columns: 1fr; gap: 28px; }
@@ -936,8 +949,6 @@
       .insta-grid { grid-template-columns: repeat(3, 1fr); }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .footer-top { grid-template-columns: 1fr; gap: 32px; }
-      /* scroll-hint をSP底部CTAの上に逃がす */
-      .scroll-hint { bottom: 72px; }
     }
     @media (max-width: 767px) {
       .fv-title { font-size: 2.4rem; }
