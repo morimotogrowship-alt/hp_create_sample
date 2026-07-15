@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株式会社Growship｜成長と絆を大事にする</title>
+<meta name="description" content="株式会社Growshipは、IT/SESサービス・AI×DXソリューション・モデル事務所を展開し、成長と絆を大事にする会社です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="journey.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<style>
+  :root{
+    --navy:#0a1730;
+    --navy-2:#0d2350;
+    --blue:#1565c0;
+    --accent:#3b8bff;
+    --ink:#141414;
+    --paper:#ffffff;
+    --paper-soft:#f5f7fb;
+    --line:#e3e7ef;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:auto;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans JP","Meiryo",sans-serif;
+    line-height:1.9;
+    overflow-x:hidden;
+  }
+  .en{
+    font-family:"Poppins","Noto Sans JP","Meiryo",sans-serif;
+  }
+  img,video{max-width:100%;display:block;}
+
+  /* ---------- Header ---------- */
+  #site-header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:900;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 32px;
+    transition:background .4s ease, box-shadow .4s ease, padding .3s ease;
+  }
+  #site-header .logo{
+    color:#fff;
+    font-weight:800;
+    font-size:22px;
+    letter-spacing:.03em;
+    text-decoration:none;
+  }
+  #site-header nav{display:flex;gap:28px;}
+  #site-header nav a{
+    color:#fff;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    letter-spacing:.02em;
+    opacity:.9;
+  }
+  #site-header nav a:hover{opacity:1;text-decoration:underline;}
+  #site-header.is-solid{
+    background:rgba(10,23,48,.92);
+    backdrop-filter:blur(6px);
+    box-shadow:0 4px 18px rgba(0,0,0,.15);
+    padding:12px 32px;
+  }
+
+  /* ---------- Video wrap (scroll-scrubbed) ---------- */
+  .video-wrap{
+    position:relative;
+    height:300vh;
+  }
+  .video-sticky{
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow:hidden;
+    background:#04101f;
+  }
+  .video-sticky video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:brightness(.72) saturate(1.05);
+  }
+  .video-sticky::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(6,16,34,.35) 0%, rgba(6,16,34,0) 30%, rgba(6,16,34,0) 60%, rgba(6,16,34,.55) 100%);
+  }
+  /* Whiteout: local to the video only. Fades the footage itself to white at
+     the start/end of its scroll range, instead of flashing the whole screen. */
+  .whiteout{
+    position:absolute;
+    inset:0;
+    background:#fff;
+    opacity:0;
+    z-index:5;
+    pointer-events:none;
+  }
+  .hero-content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#fff;
+    z-index:2;
+    padding:0 24px;
+  }
+  .hero-content .kicker{
+    font-size:13px;
+    letter-spacing:.35em;
+    opacity:.85;
+    margin-bottom:18px;
+  }
+  .hero-content h1{
+    font-family:"Poppins","Noto Sans JP","Meiryo",sans-serif;
+    font-size:clamp(48px,9vw,120px);
+    font-weight:800;
+    margin:0 0 18px;
+    letter-spacing:.02em;
+  }
+  .hero-content p{
+    font-size:clamp(15px,2vw,20px);
+    font-weight:500;
+    margin:0 0 6px;
+    opacity:.95;
+  }
+  .hero-content .sub{
+    font-size:13px;
+    opacity:.7;
+    margin-top:14px;
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:38px;left:50%;
+    transform:translateX(-50%);
+    color:#fff;
+    font-size:12px;
+    letter-spacing:.2em;
+    opacity:.8;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  .scroll-cue .arrow{
+    width:1px;height:34px;
+    background:rgba(255,255,255,.8);
+    animation:scrollpulse 1.8s infinite;
+  }
+  @keyframes scrollpulse{
+    0%{opacity:.2;transform:scaleY(.4);transform-origin:top;}
+    50%{opacity:1;transform:scaleY(1);transform-origin:top;}
+    100%{opacity:.2;transform:scaleY(.4);transform-origin:top;}
+  }
+
+  .caption{
+    position:absolute;
+    left:0;right:0;
+    bottom:12%;
+    z-index:2;
+    text-align:center;
+    color:#fff;
+    padding:0 24px;
+    opacity:0;
+  }
+  .caption p{
+    font-size:clamp(18px,2.6vw,30px);
+    font-weight:700;
+    margin:0;
+    letter-spacing:.03em;
+  }
+
+  /* ---------- Text sections ---------- */
+  .text-section{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:180px 24px 120px;
+    background:var(--paper);
+  }
+  .text-section.alt{background:var(--paper-soft);}
+
+  /* Wave divider: sits at the top of a text section, overlapping the seam
+     with the video above it, so the join reads as a shoreline rather than a
+     straight edge. Three tiled SVG layers (deep / back / front), each with
+     its own top-to-bottom gradient (light hitting the crest, deeper shade in
+     the trough) plus a soft highlight stroke along the crest line. Layers
+     scroll horizontally at different speeds AND bob vertically out of phase,
+     so the water reads as swelling rather than sliding on rails. */
+  .wave-divider{
+    position:absolute;
+    top:-1px;
+    left:0;
+    width:100%;
+    height:160px;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:4;
+  }
+  .wave-fallback{
+    position:absolute;
+    inset:0;
+  }
+  .wave-3d{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .wave-divider .layer{
+    position:absolute;
+    left:0; right:0; top:0;
+    height:100%;
+    background-repeat:repeat-x;
+    background-size:300px 100%;
+    will-change:background-position;
+  }
+  .wave-divider .layer.deep{
+    opacity:.4;
+    filter:blur(2.5px);
+    animation:wave-deep 34s linear infinite;
+  }
+  .wave-divider .layer.back{
+    opacity:.65;
+    filter:blur(1px);
+    animation:wave-back 23s linear infinite;
+  }
+  .wave-divider .layer.front{
+    animation:wave-front 14s linear infinite;
+  }
+
+  .wave-divider.tone-white .layer.deep{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23f7fbff'/><stop offset='1' stop-color='%23cddcf2'/></linearGradient></defs><path d='M0,55 Q75,25 150,55 Q225,85 300,55 L300,120 L0,120 Z' fill='url(%23g)'/></svg>");
+  }
+  .wave-divider.tone-white .layer.back{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffffff'/><stop offset='1' stop-color='%23dbe8fb'/></linearGradient></defs><path d='M0,58 Q75,34 150,58 Q225,82 300,58 L300,120 L0,120 Z' fill='url(%23g)'/><path d='M0,58 Q75,34 150,58 Q225,82 300,58' fill='none' stroke='rgba(255,255,255,.7)' stroke-width='3'/></svg>");
+  }
+  .wave-divider.tone-white .layer.front{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23fbfdff'/><stop offset='1' stop-color='%23ffffff'/></linearGradient></defs><path d='M0,70 Q75,50 150,70 Q225,90 300,70 L300,120 L0,120 Z' fill='url(%23g)'/><path d='M0,70 Q75,50 150,70 Q225,90 300,70' fill='none' stroke='rgba(255,255,255,.9)' stroke-width='4' stroke-linecap='round'/></svg>");
+  }
+
+  .wave-divider.tone-soft .layer.deep{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23f2f7fd'/><stop offset='1' stop-color='%23c3d6ee'/></linearGradient></defs><path d='M0,55 Q75,25 150,55 Q225,85 300,55 L300,120 L0,120 Z' fill='url(%23g)'/></svg>");
+  }
+  .wave-divider.tone-soft .layer.back{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffffff'/><stop offset='1' stop-color='%23d3e0f4'/></linearGradient></defs><path d='M0,58 Q75,34 150,58 Q225,82 300,58 L300,120 L0,120 Z' fill='url(%23g)'/><path d='M0,58 Q75,34 150,58 Q225,82 300,58' fill='none' stroke='rgba(255,255,255,.65)' stroke-width='3'/></svg>");
+  }
+  .wave-divider.tone-soft .layer.front{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23fafcff'/><stop offset='1' stop-color='%23f5f7fb'/></linearGradient></defs><path d='M0,70 Q75,50 150,70 Q225,90 300,70 L300,120 L0,120 Z' fill='url(%23g)'/><path d='M0,70 Q75,50 150,70 Q225,90 300,70' fill='none' stroke='rgba(255,255,255,.85)' stroke-width='4' stroke-linecap='round'/></svg>");
+  }
+
+  /* Each keyframe set shifts exactly one tile-width (300px) horizontally so
+     the loop is seamless, while background-position-y bobs up and down and
+     back to 0 over the same cycle, giving a swelling, non-linear motion. */
+  @keyframes wave-deep{
+    0%{background-position:0px 0px;}
+    25%{background-position:-75px 8px;}
+    50%{background-position:-150px 0px;}
+    75%{background-position:-225px -8px;}
+    100%{background-position:-300px 0px;}
+  }
+  @keyframes wave-back{
+    0%{background-position:0px 0px;}
+    25%{background-position:75px -6px;}
+    50%{background-position:150px 0px;}
+    75%{background-position:225px 6px;}
+    100%{background-position:300px 0px;}
+  }
+  @keyframes wave-front{
+    0%{background-position:0px 0px;}
+    25%{background-position:-75px 5px;}
+    50%{background-position:-150px 0px;}
+    75%{background-position:-225px -5px;}
+    100%{background-position:-300px 0px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .wave-divider .layer{animation:none;}
+  }
+
+  .text-inner{
+    max-width:var(--maxw);
+    margin:0 auto;
+    width:100%;
+  }
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .eyebrow .line{width:44px;height:2px;background:var(--blue);}
+  .eyebrow span{
+    font-family:"Poppins","Noto Sans JP","Meiryo",sans-serif;
+    font-size:13px;
+    letter-spacing:.3em;
+    color:var(--blue);
+    font-weight:600;
+  }
+  h2.sec-title{
+    font-size:clamp(30px,4vw,46px);
+    margin:0 0 34px;
+    font-weight:800;
+    color:var(--navy);
+  }
+  .lead{
+    font-size:16px;
+    color:#333;
+    max-width:760px;
+    margin:0 0 20px;
+  }
+
+  .mission-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    margin-top:46px;
+  }
+  @media (max-width:800px){.mission-grid{grid-template-columns:1fr;}}
+  .mission-card h3{
+    font-size:15px;
+    color:var(--blue);
+    letter-spacing:.05em;
+    margin:0 0 10px;
+  }
+  .mission-card p{margin:0;color:#333;font-size:15px;}
+  .mission-card ul{margin:0;padding-left:1.1em;color:#333;font-size:15px;}
+  .mission-card li{margin-bottom:6px;}
+
+  .biz-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:26px;
+    margin-top:20px;
+  }
+  @media (max-width:900px){.biz-grid{grid-template-columns:1fr;}}
+  .biz-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:32px 26px;
+    position:relative;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .biz-card:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(10,23,48,.12);}
+  .biz-card .badge{
+    display:inline-block;
+    font-size:11px;
+    letter-spacing:.08em;
+    color:#fff;
+    background:var(--blue);
+    padding:3px 10px;
+    border-radius:2px;
+    margin-bottom:14px;
+  }
+  .biz-card .tag{
+    font-size:12px;
+    color:#8a93a3;
+    letter-spacing:.08em;
+    margin-bottom:6px;
+  }
+  .biz-card h3{
+    font-size:20px;
+    margin:0 0 14px;
+    color:var(--navy);
+  }
+  .biz-card p{font-size:14px;color:#444;margin:0 0 20px;}
+  .biz-card a{
+    font-size:13px;
+    color:var(--blue);
+    text-decoration:none;
+    font-weight:600;
+  }
+  .biz-card a:hover{text-decoration:underline;}
+
+  .fact-strip{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin:40px 0 50px;
+  }
+  @media (max-width:800px){.fact-strip{grid-template-columns:repeat(2,1fr);}}
+  .fact{
+    border-left:2px solid var(--blue);
+    padding-left:14px;
+  }
+  .fact .num{font-size:26px;font-weight:800;color:var(--navy);font-family:"Poppins";}
+  .fact .label{font-size:12px;color:#666;margin-top:4px;}
+
+  .badge-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:46px;
+  }
+  .badge-list span{
+    font-size:13px;
+    background:#fff;
+    border:1px solid var(--line);
+    padding:8px 16px;
+    border-radius:20px;
+    color:#333;
+  }
+
+  .news-list{list-style:none;margin:0;padding:0;max-width:760px;}
+  .news-list li{
+    display:flex;
+    gap:20px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .news-list time{color:#8a93a3;flex:0 0 110px;}
+
+  .cta-wrap{
+    text-align:center;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .cta-buttons{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    margin-top:38px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-block;
+    padding:16px 38px;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-decoration:none;
+    border-radius:2px;
+    transition:opacity .2s ease;
+  }
+  .btn:hover{opacity:.85;}
+  .btn.primary{background:var(--navy);color:#fff;}
+  .btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--navy);}
+
+  footer{
+    background:var(--navy);
+    color:#c7d0e0;
+    padding:60px 24px 30px;
+    font-size:13px;
+  }
+  footer .foot-inner{max-width:var(--maxw);margin:0 auto;}
+  footer .foot-top{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:24px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+    padding-bottom:30px;
+    margin-bottom:24px;
+  }
+  footer .foot-links{display:flex;gap:20px;flex-wrap:wrap;}
+  footer a{color:#c7d0e0;text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+  footer .copyright{opacity:.6;font-size:12px;}
+
+  /* ---------- Reduced motion fallback ---------- */
+  @media (prefers-reduced-motion: reduce){
+    .video-wrap{height:100vh;}
+    .video-sticky{position:relative;}
+    .whiteout{display:none;}
+    .scroll-cue .arrow{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <a href="#top" class="logo en" data-scroll>Growship</a>
+  <nav>
+    <a href="#about" data-scroll>About</a>
+    <a href="#business" data-scroll>Business</a>
+    <a href="#company" data-scroll>Company</a>
+    <a href="#contact" data-scroll>Contact</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- GROWSHIP CINEMATIC JOURNEY PROTOTYPE -->
+  <section class="journey" id="journey" aria-label="Growshipの航海">
+    <div class="journey-sticky">
+      <div class="prototype-band prototype-band-one"><strong>試作 1</strong><span>REALTIME 3D PROTOTYPE</span></div>
+      <div class="corporate-nav" aria-label="Growship企業情報ナビゲーション">
+        <a class="corporate-brand" href="#top" data-scroll><strong>Growship</strong><span>GROW &amp; SHIP</span></a>
+        <nav><a href="#about" data-scroll>ABOUT</a><a href="#business" data-scroll>BUSINESS</a><a href="#company" data-scroll>COMPANY</a><a href="#contact" data-scroll>CONTACT</a></nav>
+        <button class="motion-toggle" type="button" aria-pressed="true"><span></span>MOTION</button>
+        <a class="corporate-contact" href="#contact" data-scroll>CONTACT <span>→</span></a>
+      </div>
+      <canvas class="journey-webgl" aria-hidden="true"></canvas>
+      <div class="journey-world" aria-hidden="true">
+        <div class="journey-layer journey-sky"></div>
+        <div class="journey-layer journey-clouds journey-clouds-back"></div>
+        <div class="journey-layer journey-horizon"></div>
+        <div class="journey-sun"></div>
+        <div class="journey-depth journey-depth-left"><span></span><span></span><span></span></div>
+        <div class="journey-depth journey-depth-right"><span></span><span></span><span></span></div>
+        <div class="journey-city-gate"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="future-city future-city-left">
+          <div class="future-tower tower-about">
+            <div class="tower-lines"></div>
+            <div class="tower-sign"><small>01 / WHO WE ARE</small><strong>ABOUT</strong><span>成長と絆を、未来へ運ぶ。</span></div>
+          </div>
+          <div class="future-tower tower-service"><div class="tower-lines"></div><div class="mini-sign">IT SERVICE</div></div>
+        </div>
+        <div class="future-city future-city-right">
+          <div class="future-tower tower-business">
+            <div class="tower-lines"></div>
+            <div class="rooftop-sign"><small>02 / WHAT WE DO</small><strong>BUSINESS</strong><span>IT ・ AI / DX ・ MODEL</span></div>
+          </div>
+          <div class="future-tower tower-company"><div class="tower-lines"></div><div class="mini-sign">COMPANY</div></div>
+        </div>
+        <div class="future-skyway"><span>GROWSHIP AIRWAY 2050</span></div>
+        <div class="journey-layer journey-landmarks">
+          <div class="landmark port"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="landmark island island-a"></div>
+          <div class="landmark island island-b"></div>
+          <div class="landmark city"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="landmark island island-c"></div>
+        </div>
+        <div class="journey-layer journey-sea"></div>
+        <div class="journey-lane"></div>
+        <div class="journey-mist"></div>
+        <div class="journey-layer journey-clouds journey-clouds-front"></div>
+      </div>
+
+      <div class="journey-ship-position" aria-hidden="true">
+        <div class="journey-wake"></div>
+        <div class="journey-ship-float">
+          <div class="ship-body"><span class="ship-window"></span><span class="ship-window"></span><span class="ship-window"></span></div>
+          <div class="ship-cabin"></div>
+          <div class="ship-mast"></div>
+        </div>
+      </div>
+
+      <div class="journey-foreground" aria-hidden="true"></div>
+      <div class="flight-streaks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="motion-vignette" aria-hidden="true"></div>
+
+      <div class="journey-content">
+        <article class="future-hero">
+          <p class="journey-kicker">GROW &amp; SHIP / TO THE NEXT CITY</p>
+          <h1>成長と絆を、<br>未来へ運ぶ。</h1>
+          <p>港から都市水路へ。人と技術をつなぐ船が、海上を駆け抜ける。</p>
+        </article>
+        <article class="corporate-scene corporate-about-scene">
+          <div class="corporate-scene-index"><span>01</span><small>WHO WE ARE</small></div>
+          <div class="corporate-scene-body about-rich">
+            <header class="about-rich-title"><p class="journey-kicker">ABOUT</p><h2>Growship</h2><strong>成長と絆を大事にする</strong></header>
+            <div class="about-rich-story">
+              <p>Growは英語で成長するという意味、Shipは英語で船という意味であり、Friendship、Partnership、Relationshipなどの絆に関連する英単語に使用されています。我々が大切にする2つの語を繋げることで、造語であるGrowshipが誕生しました。</p>
+              <p>会社の成長、そして従業員の成長を大事にする。顧客、取引会社様、従業員、関わる全ての人との絆を大事にすることで世に貢献する。それが株式会社Growshipの存在意義です。</p>
+              <p>全ての事業において、信頼関係及び絆を築くということを大事にしてお仕事をさせていただきます。</p>
+              <p class="about-signature">株式会社Growship　<strong>吉原 秀輔</strong></p>
+            </div>
+            <section class="about-rich-mission"><h3>Growship Mission</h3><p>全従業員及び会社が継続的に成長することで、全人類そして全社会に貢献する</p></section>
+            <section class="about-rich-hr"><h3>Growship HR development</h3><ul><li>自分の言動に責任を持つこと</li><li>常に謙虚な姿勢で学び続けること</li><li>誰かが本当に困っているときは損得なしに助けること</li></ul></section>
+            <aside class="about-rich-benefits"><p>Growshipでは、エンジニア向けに独自の<strong>福利厚生</strong>及び<strong>コミッション制度</strong>を設けています。</p><span>スキルの向上、仕事への責任感の増幅、人間としての成長を促進するためです。</span><a href="#about" data-scroll>詳細はこちら <b>→</b></a></aside>
+          </div>
+        </article>
+        <article class="corporate-scene corporate-business-scene">
+          <div class="corporate-scene-index"><span>02</span><small>WHAT WE DO</small></div>
+          <div class="corporate-scene-body business-rich">
+            <header class="business-rich-title"><p class="journey-kicker">BUSINESS</p><h2>ビジネス</h2></header>
+            <div class="business-rich-grid">
+              <section class="business-visual business-it"><div><small>SES SERVICES</small><h3>IT SERVICE</h3><a href="#business" data-scroll>詳しくはこちら <span>→</span></a></div></section>
+              <section class="business-visual business-ai"><div><small>AI × DX SOLUTIONS</small><h3>AI SOLUTION</h3><a href="#business" data-scroll>詳しくはこちら <span>→</span></a></div></section>
+              <section class="business-visual business-model"><div><small>MODELING AGENCY</small><h3>GROWSHIP GLOBAL MODEL</h3><a href="#business" data-scroll>詳しくはこちら <span>→</span></a></div></section>
+            </div>
+          </div>
+        </article>
+        <div class="corporate-trust"><span>GROWSHIP MISSION</span><strong>成長と絆を、大事にする。</strong><a href="#about" data-scroll>SCENEをスキップ</a></div>
+        <article class="journey-copy is-active" data-start="0" data-end="0.25">
+          <p class="journey-kicker">GROW &amp; SHIP</p>
+          <h1>成長と絆を、<br>大事にする。</h1>
+          <p>一隻の船が、新しい可能性へ向けて静かに港を発つ。</p>
+        </article>
+        <article class="journey-copy" data-start="0.28" data-end="0.52">
+          <p class="journey-kicker">OUR MISSION</p>
+          <h2>ともに進み、<br>未来をひらく。</h2>
+          <p>人と技術をつなぎ、企業と働く人の持続的な成長を支えます。</p>
+        </article>
+        <article class="journey-copy" data-start="0.55" data-end="0.76">
+          <p class="journey-kicker">OUR BUSINESS</p>
+          <h2>変化の先へ、<br>確かな航路を。</h2>
+          <p>IT・AI・人材の力で、挑戦する組織の航海に伴走します。</p>
+        </article>
+        <article class="journey-panel" data-start="0.78" data-end="0.94">
+          <p class="journey-kicker">ABOUT GROWSHIP</p>
+          <h2>成長をつなぐ船でありたい。</h2>
+          <p>Growshipは、関わるすべての人との絆を大切にしながら、次の景色へ進み続けます。</p>
+          <a href="#about" data-scroll>私たちについて <span aria-hidden="true">→</span></a>
+        </article>
+        <div class="journey-endmark" aria-hidden="true">Growship</div>
+      </div>
+
+      <div class="journey-progress" aria-hidden="true"><span></span></div>
+      <p class="journey-scroll-cue" aria-hidden="true">SCROLL TO SAIL</p>
+    </div>
+  </section>
+
+  <!-- VIDEO 1: HERO -->
+  <section class="video-wrap" id="video-1" data-no-fadein>
+    <div class="video-sticky">
+      <div class="prototype-band prototype-band-two"><strong>試作 2</strong><span>SCROLL-SCRUBBED VIDEO PROTOTYPE</span></div>
+      <video class="scrub-video" src="video-1.mp4" muted playsinline preload="auto"></video>
+      <div class="hero-content">
+        <p class="kicker en">GROW &amp; SHIP</p>
+        <h1>Growship</h1>
+        <p>成長と絆を大事にする</p>
+        <p class="sub">株式会社Growshipは、琉球ゴールデンキングスのサポートカンパニーです</p>
+      </div>
+      <div class="scroll-cue">
+        <span>SCROLL</span>
+        <span class="arrow"></span>
+      </div>
+      <div class="whiteout"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="text-section" id="about">
+    <div class="wave-divider tone-white">
+      <div class="wave-fallback"><div class="layer deep"></div><div class="layer back"></div><div class="layer front"></div></div>
+      <canvas class="wave-3d" data-tone="white"></canvas>
+    </div>
+    <div class="text-inner">
+      <div class="eyebrow"><span class="line"></span><span class="en">ABOUT</span></div>
+      <h2 class="sec-title">Growship</h2>
+      <p class="lead">
+        Growは英語で成長するという意味、Shipは英語で船という意味であり、Friendship, Partnership, Relationshipなど、絆に関連する意味を成す英単語に使用されております。私たちが大切にする「成長」と「絆」、2つの語を繋げることで生まれた造語――それがGrowshipです。
+      </p>
+      <p class="lead">
+        会社の成長、そして従業員の成長を大事にする。顧客、取引会社様、従業員、関わるすべての人との絆を大事にすることで世に貢献する。それが株式会社Growshipの存在意義です。
+      </p>
+      <div class="mission-grid">
+        <div class="mission-card">
+          <h3 class="en">GROWSHIP MISSION</h3>
+          <p>全従業員及び会社が継続的に成長することで、全人類そして全社会に貢献する。</p>
+        </div>
+        <div class="mission-card">
+          <h3 class="en">GROWSHIP HR DEVELOPMENT</h3>
+          <ul>
+            <li>自分の言動に責任を持つこと</li>
+            <li>常に謙虚な姿勢で学び続けること</li>
+            <li>誰かが本当に困っているときは損得なしに助けること</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO 2 -->
+  <section class="video-wrap" id="video-2">
+    <div class="video-sticky">
+      <div class="prototype-band prototype-band-two"><strong>試作 2</strong><span>SCROLL-SCRUBBED VIDEO PROTOTYPE</span></div>
+      <video class="scrub-video" src="video-2.mp4" muted playsinline preload="auto"></video>
+      <div class="caption"><p>3つの事業が、成長を推進する。</p></div>
+      <div class="whiteout"></div>
+    </div>
+  </section>
+
+  <!-- BUSINESS -->
+  <section class="text-section alt" id="business">
+    <div class="wave-divider tone-soft">
+      <div class="wave-fallback"><div class="layer deep"></div><div class="layer back"></div><div class="layer front"></div></div>
+      <canvas class="wave-3d" data-tone="soft"></canvas>
+    </div>
+    <div class="text-inner">
+      <div class="eyebrow"><span class="line"></span><span class="en">BUSINESS</span></div>
+      <h2 class="sec-title">3つの事業</h2>
+      <div class="biz-grid">
+        <div class="biz-card">
+          <div class="tag en">SES SERVICES</div>
+          <h3>IT SERVICE</h3>
+          <p>ヘルプデスク、システム運用保守、インフラ構築からシステム開発まで。幅広い業種・業態に対応するITエンジニアリングサービスです。</p>
+          <a href="ses.html">詳しくはこちら &rarr;</a>
+        </div>
+        <div class="biz-card">
+          <span class="badge en">NEW BUSINESS 2026</span>
+          <div class="tag en">AI × DX SOLUTIONS</div>
+          <h3>AI SOLUTION</h3>
+          <p>AIを「知っている」から「使いこなせる」組織へ。現場で動くAIを自社実装し、中小企業向けAI導入コンサル・AIスクール事業へ展開します。</p>
+          <a href="aisolution.html">詳しくはこちら &rarr;</a>
+        </div>
+        <div class="biz-card">
+          <div class="tag en">MODELING AGENCY</div>
+          <h3>GROWSHIP GLOBAL MODEL</h3>
+          <p>外国人モデルを中心としたモデル事務所事業。国内外のキャスティングニーズに応えています。</p>
+          <a href="https://growship-gmodel.com/" target="_blank" rel="noopener">詳しくはこちら &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO 3 -->
+  <section class="video-wrap" id="video-3">
+    <div class="video-sticky">
+      <div class="prototype-band prototype-band-two"><strong>試作 2</strong><span>SCROLL-SCRUBBED VIDEO PROTOTYPE</span></div>
+      <video class="scrub-video" src="video-3.mp4" muted playsinline preload="auto"></video>
+      <div class="caption"><p>積み重ねた実績が、信頼という航路をつくる。</p></div>
+      <div class="whiteout"></div>
+    </div>
+  </section>
+
+  <!-- COMPANY -->
+  <section class="text-section" id="company">
+    <div class="wave-divider tone-white">
+      <div class="wave-fallback"><div class="layer deep"></div><div class="layer back"></div><div class="layer front"></div></div>
+      <canvas class="wave-3d" data-tone="white"></canvas>
+    </div>
+    <div class="text-inner">
+      <div class="eyebrow"><span class="line"></span><span class="en">COMPANY</span></div>
+      <h2 class="sec-title">実績と信頼</h2>
+
+      <div class="fact-strip">
+        <div class="fact"><div class="num en">2018</div><div class="label">設立（6月5日）</div></div>
+        <div class="fact"><div class="num en">1,000万円</div><div class="label">資本金</div></div>
+        <div class="fact"><div class="num en">約100名</div><div class="label">従業員数</div></div>
+        <div class="fact"><div class="num en">5拠点</div><div class="label">大阪本社・東京・名古屋・沖縄・仙台</div></div>
+      </div>
+
+      <div class="badge-list">
+        <span>健康経営優良法人2026（ネクストブライト1000）</span>
+        <span>ホワイト企業認定シルバー</span>
+        <span>プライバシーマーク付与事業者</span>
+        <span>労働者派遣事業許可</span>
+        <span>有料職業紹介事業許可</span>
+        <span>特定技能外国人登録支援機関</span>
+      </div>
+
+      <ul class="news-list">
+        <li><time>2026.07.10</time><span>琉球ゴールデンキングスのサポートカンパニーに就任</span></li>
+        <li><time>2026.05.26</time><span>AI事業部が新たに発足</span></li>
+        <li><time>2026.03.09</time><span>「健康経営優良法人2026（ネクストブライト1000）」に認定</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- VIDEO 4 -->
+  <section class="video-wrap" id="video-4">
+    <div class="video-sticky">
+      <div class="prototype-band prototype-band-two"><strong>試作 2</strong><span>SCROLL-SCRUBBED VIDEO PROTOTYPE</span></div>
+      <video class="scrub-video" src="video-4.mp4" muted playsinline preload="auto"></video>
+      <div class="caption"><p>この先も、共に進む。</p></div>
+      <div class="whiteout"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT / CTA -->
+  <section class="text-section" id="contact">
+    <div class="wave-divider tone-white">
+      <div class="wave-fallback"><div class="layer deep"></div><div class="layer back"></div><div class="layer front"></div></div>
+      <canvas class="wave-3d" data-tone="white"></canvas>
+    </div>
+    <div class="text-inner cta-wrap">
+      <div class="eyebrow" style="justify-content:center;"><span class="line"></span><span class="en">CONTACT</span><span class="line"></span></div>
+      <h2 class="sec-title">共に、成長する。</h2>
+      <p class="lead" style="margin:0 auto;">採用に関するお問い合わせ、お取引に関するご相談など、お気軽にご連絡ください。</p>
+      <div class="cta-buttons">
+        <a class="btn primary" href="recruit.html">採用情報を見る</a>
+        <a class="btn ghost" href="contact.html">お問い合わせ</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <div class="en" style="font-weight:800;font-size:18px;color:#fff;margin-bottom:8px;">Growship</div>
+        <div>株式会社Growship　大阪市中央区南船場3丁目8番7号　三栄ムアビル803</div>
+      </div>
+      <div class="foot-links">
+        <a href="#top" data-scroll>Home</a>
+        <a href="ses.html">IT Service</a>
+        <a href="aisolution.html">AI Solution</a>
+        <a href="https://growship-gmodel.com/" target="_blank" rel="noopener">Global Model</a>
+        <a href="recruit.html">Recruit</a>
+        <a href="contact.html">Contact us</a>
+      </div>
+    </div>
+    <div class="copyright">© 2026 Growship Inc. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const header = document.getElementById('site-header');
+  const videos = Array.from(document.querySelectorAll('.scrub-video'));
+  let videoWraps = [];
+
+  function smoothstep(min, max, value){
+    let x = Math.min(1, Math.max(0, (value - min) / (max - min)));
+    return x * x * (3 - 2 * x);
+  }
+
+  function measure(){
+    videoWraps = Array.from(document.querySelectorAll('.video-wrap')).map(el => ({
+      el,
+      video: el.querySelector('video'),
+      caption: el.querySelector('.caption'),
+      hero: el.querySelector('.hero-content'),
+      cue: el.querySelector('.scroll-cue'),
+      whiteout: el.querySelector('.whiteout'),
+      fadeIn: !el.hasAttribute('data-no-fadein'),
+      currentWhite: 0,
+      targetWhite: 0
+    }));
+  }
+
+  function updateTargets(){
+    const scrollY = window.scrollY || window.pageYOffset;
+    const vh = window.innerHeight;
+
+    header.classList.toggle('is-solid', scrollY > vh * 0.5);
+
+    videoWraps.forEach(wrap => {
+      const {el, video, caption, hero, cue} = wrap;
+      const top = el.offsetTop;
+      const height = el.offsetHeight - vh;
+      if (height <= 0) return;
+      let progress = (scrollY - top) / height;
+      progress = Math.min(1, Math.max(0, progress));
+
+      if (video && video.duration && isFinite(video.duration)){
+        const t = progress * video.duration;
+        if (Math.abs(video.currentTime - t) > 0.03){
+          try{ video.currentTime = t; }catch(e){}
+        }
+      }
+      if (caption){
+        const op = smoothstep(0.55, 0.9, progress);
+        caption.style.opacity = op;
+      }
+      if (hero){
+        hero.style.opacity = 1 - smoothstep(0, 0.32, progress);
+        hero.style.transform = 'translateY(' + (progress * 30) + 'px)';
+      }
+      if (cue){
+        cue.style.opacity = 1 - smoothstep(0, 0.15, progress);
+      }
+
+      // Whiteout target: only the video itself fades to white, not the whole
+      // screen. Fade-in from white at the start of the section (skipped for
+      // the hero, which must be visible immediately on load), fade-out to
+      // white at the end, right before the next section covers it.
+      const endFade = smoothstep(0.86, 1, progress);
+      const startFade = wrap.fadeIn ? (1 - smoothstep(0, 0.14, progress)) : 0;
+      wrap.targetWhite = Math.max(startFade, endFade);
+    });
+  }
+
+  // Continuous animation loop: each video's whiteout eases toward its target
+  // every frame instead of jumping straight to the scroll-derived value. This
+  // is what keeps the fade smooth even with uneven wheel/trackpad scrolling.
+  function animate(){
+    videoWraps.forEach(wrap => {
+      if (!wrap.whiteout) return;
+      wrap.currentWhite += (wrap.targetWhite - wrap.currentWhite) * 0.14;
+      if (Math.abs(wrap.targetWhite - wrap.currentWhite) < 0.001) wrap.currentWhite = wrap.targetWhite;
+      wrap.whiteout.style.opacity = wrap.currentWhite;
+    });
+    requestAnimationFrame(animate);
+  }
+
+  let ticking = false;
+  function requestTick(){
+    if (!ticking){
+      requestAnimationFrame(() => { updateTargets(); ticking = false; });
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', requestTick, {passive:true});
+  window.addEventListener('resize', () => { measure(); updateTargets(); });
+
+  videos.forEach(v => {
+    v.addEventListener('loadedmetadata', () => {
+      try{ v.currentTime = 0; }catch(e){}
+    });
+  });
+
+  document.querySelectorAll('a[data-scroll]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const href = a.getAttribute('href');
+      const target = document.querySelector(href);
+      if (target) target.scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  window.addEventListener('load', () => { measure(); updateTargets(); });
+  measure();
+  updateTargets();
+  requestAnimationFrame(animate);
+})();
+</script>
+
+<script>
+// ---------------------------------------------------------------------------
+// 3D wave (WebGL / Three.js): replaces the flat SVG wave-divider with a real,
+// lit, vertex-displaced water surface, tilted in perspective so it actually
+// recedes in depth rather than just sliding sideways as a flat image.
+//
+// Falls back to the SVG layers (already in the DOM, visible by default) when
+// Three.js/WebGL isn't available, or when the user has requested reduced
+// motion. Each canvas only renders while it's on screen (IntersectionObserver)
+// so scrolling past a wave doesn't keep the GPU busy for no reason.
+// ---------------------------------------------------------------------------
+(function(){
+  function prefersReducedMotion(){
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function supportsWebGL(){
+    try{
+      const c = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext &&
+        (c.getContext('webgl') || c.getContext('experimental-webgl')));
+    }catch(e){
+      return false;
+    }
+  }
+
+  function start(){
+    if (typeof THREE === 'undefined' || prefersReducedMotion() || !supportsWebGL()) return;
+
+    const TONE_COLORS = {
+      white:{ surface:0xf3f8ff, specular:0xbdd6f7 },
+      soft:{ surface:0xeaf1fb, specular:0xb7cdec }
+    };
+
+    function WaveField(canvas, tone){
+      this.canvas = canvas;
+      this.time = Math.random() * 50; // desync multiple instances
+      this.visible = false;
+
+      const palette = TONE_COLORS[tone] || TONE_COLORS.white;
+
+      this.renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
+      this.camera.position.set(0, 0.85, 2.1);
+      this.camera.lookAt(0, -0.1, 0);
+
+      const geo = new THREE.PlaneGeometry(11, 2.4, 56, 16);
+      const mat = new THREE.MeshPhongMaterial({
+        color: palette.surface,
+        specular: palette.specular,
+        shininess: 70,
+        transparent: true,
+        opacity: 0.96,
+        side: THREE.DoubleSide
+      });
+      this.mesh = new THREE.Mesh(geo, mat);
+      this.mesh.rotation.x = -1.18; // tilt the plane so it recedes in perspective
+      this.scene.add(this.mesh);
+
+      this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+      const dir = new THREE.DirectionalLight(0xffffff, 0.85);
+      dir.position.set(1.4, 2.2, 1.6);
+      this.scene.add(dir);
+
+      // Original flat vertex positions, used as the base we displace from.
+      this.base = geo.attributes.position.array.slice();
+
+      this.io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { this.visible = e.isIntersecting; });
+      }, { threshold: 0 });
+      this.io.observe(canvas);
+
+      this.resize();
+    }
+
+    WaveField.prototype.resize = function(){
+      const rect = this.canvas.getBoundingClientRect();
+      const w = Math.max(1, rect.width);
+      const h = Math.max(1, rect.height);
+      this.renderer.setSize(w, h, false);
+      this.camera.aspect = w / h;
+      this.camera.updateProjectionMatrix();
+    };
+
+    WaveField.prototype.update = function(dt){
+      if (!this.visible) return;
+      this.time += dt;
+      const pos = this.mesh.geometry.attributes.position;
+      const base = this.base;
+      const t = this.time;
+      for (let i = 0; i < pos.count; i++){
+        const ix = i * 3;
+        const x = base[ix];
+        const y = base[ix + 1];
+        const z =
+          Math.sin(x * 1.5 + t * 1.1) * 0.09 +
+          Math.sin(y * 2.1 + t * 0.75) * 0.06 +
+          Math.sin((x + y) * 1.05 + t * 1.6) * 0.035;
+        pos.setZ(i, z);
+      }
+      pos.needsUpdate = true;
+      this.mesh.geometry.computeVertexNormals();
+      this.renderer.render(this.scene, this.camera);
+    };
+
+    const fields = [];
+    document.querySelectorAll('.wave-3d').forEach((canvas) => {
+      const tone = canvas.dataset.tone || 'white';
+      let field;
+      try{
+        field = new WaveField(canvas, tone);
+      }catch(e){
+        return; // leave the SVG fallback visible for this instance
+      }
+      fields.push(field);
+      canvas.classList.add('is-active');
+      const wrap = canvas.closest('.wave-divider');
+      const fallback = wrap && wrap.querySelector('.wave-fallback');
+      if (fallback) fallback.style.display = 'none';
+    });
+
+    if (!fields.length) return;
+
+    window.addEventListener('resize', () => {
+      fields.forEach((f) => f.resize());
+    });
+
+    let last = performance.now();
+    function loop(now){
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      fields.forEach((f) => f.update(dt));
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  // three.min.js is loaded with `defer`, so by the window `load` event it's ready.
+  window.addEventListener('load', start);
+})();
+</script>
+
+<script src="journey.js"></script>
+<script src="journey3d.js"></script>
+</body>
+</html>

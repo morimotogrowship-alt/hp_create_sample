@@ -1,151 +1,118 @@
-const $ = (selector, scope = document) => scope.querySelector(selector);
-const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 
-window.addEventListener("DOMContentLoaded", () => {
-  const loader = $(".loader");
+window.addEventListener('DOMContentLoaded', () => {
+  /* ---- Loading ---- */
+  const loader = $('.loader');
   if (loader) {
-    const seen = sessionStorage.getItem("kizzLoaderSeen");
-    if (seen) {
-      loader.classList.add("hide");
+    if (sessionStorage.getItem('kizzSeen')) {
+      loader.classList.add('hide');
     } else {
-      sessionStorage.setItem("kizzLoaderSeen", "1");
-      setTimeout(() => loader.classList.add("hide"), 1700);
+      sessionStorage.setItem('kizzSeen', '1');
+      setTimeout(() => loader.classList.add('hide'), 1750);
     }
   }
 
-  const hamburger = $(".hamburger");
-  const mobileMenu = $(".mobile-menu");
-  hamburger?.addEventListener("click", () => {
-    const open = mobileMenu.classList.toggle("open");
-    hamburger.setAttribute("aria-expanded", String(open));
-  });
-  $$(".mobile-menu a").forEach((link) => link.addEventListener("click", () => mobileMenu.classList.remove("open")));
+  /* ---- Mobile menu ---- */
+  const hamburger = $('.hamburger');
+  const mobileMenu = $('.mobile-menu');
+  const mobileClose = $('.mobile-close');
 
-  $$(".faq-q").forEach((button) => {
-    button.addEventListener("click", () => button.closest(".faq-item").classList.toggle("open"));
-  });
+  const openMenu = () => {
+    mobileMenu.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+  };
+  const closeMenu = () => {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  };
 
-  const tabs = $$(".tab");
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
-      $$(".salon-panel").forEach((panel) => panel.classList.toggle("active", panel.dataset.salon === tab.dataset.salon));
+  hamburger?.addEventListener('click', () =>
+    mobileMenu.classList.contains('open') ? closeMenu() : openMenu()
+  );
+  mobileClose?.addEventListener('click', closeMenu);
+  $$('.mobile-menu a').forEach(a => a.addEventListener('click', closeMenu));
+
+  /* ---- FAQ accordion ---- */
+  $$('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      $$('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
     });
   });
 
-  const filters = $$(".filter");
-  filters.forEach((filter) => {
-    filter.addEventListener("click", () => {
-      filters.forEach((f) => f.classList.remove("active"));
-      filter.classList.add("active");
-      const value = filter.dataset.filter;
-      $$(".style-card").forEach((card) => {
-        card.style.display = value === "ALL" || card.dataset.category === value ? "" : "none";
-      });
-    });
-  });
-
-  $("form[data-reserve]")?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    $(".complete")?.classList.add("show");
-    event.currentTarget.reset();
-  });
-
-  initFullScreenSnap();
+  /* ---- Snap scroll for full-screen sections ---- */
+  initSnap();
 });
 
-function initFullScreenSnap() {
-  const snapPage = $(".page.snap");
+function initSnap() {
+  const snapPage = $('.page.snap');
   if (!snapPage) return;
-  const sections = $$(".full-section", snapPage).slice(0, 3);
+  const sections = $$('.fs', snapPage).slice(0, 3);
   if (sections.length < 3) return;
 
-  let isAnimating = false;
-  let touchStartY = 0;
-  const wheelThreshold = 28;
-  const touchThreshold = 48;
+  let busy = false;
+  let touchY = 0;
+  const WHEEL_MIN = 30;
+  const TOUCH_MIN = 48;
 
-  const clampIndex = (index) => Math.max(0, Math.min(sections.length - 1, index));
+  const clamp = i => Math.max(0, Math.min(sections.length - 1, i));
 
-  const getActiveIndex = () => {
-    const viewportCenter = window.scrollY + window.innerHeight / 2;
-    let active = 0;
-    let closest = Infinity;
-    sections.forEach((section, index) => {
-      const center = section.offsetTop + section.offsetHeight / 2;
-      const distance = Math.abs(center - viewportCenter);
-      if (distance < closest) {
-        closest = distance;
-        active = index;
-      }
+  const activeIdx = () => {
+    const mid = window.scrollY + window.innerHeight / 2;
+    let idx = 0, best = Infinity;
+    sections.forEach((s, i) => {
+      const d = Math.abs(s.offsetTop + s.offsetHeight / 2 - mid);
+      if (d < best) { best = d; idx = i; }
     });
-    return active;
+    return idx;
   };
 
-  const scrollToY = (top) => {
-    isAnimating = true;
-    window.scrollTo({ top, behavior: "smooth" });
-    window.setTimeout(() => {
-      isAnimating = false;
-    }, 780);
+  const scrollTo = top => {
+    busy = true;
+    window.scrollTo({ top, behavior: 'smooth' });
+    setTimeout(() => { busy = false; }, 800);
   };
 
-  const scrollToSection = (index) => scrollToY(sections[clampIndex(index)].offsetTop);
+  const goTo = i => scrollTo(sections[clamp(i)].offsetTop);
 
-  const scrollAfterIntro = () => {
+  const exitSnap = () => {
     const next = sections[2].nextElementSibling;
-    scrollToY(next ? next.offsetTop : sections[2].offsetTop + sections[2].offsetHeight);
+    scrollTo(next ? next.offsetTop : sections[2].offsetTop + sections[2].offsetHeight);
   };
 
-  const handleStep = (direction, event) => {
-    if (isAnimating) {
-      event?.preventDefault();
-      return;
-    }
-
+  const step = (dir, ev) => {
+    if (busy) { ev?.preventDefault(); return; }
     const thirdBottom = sections[2].offsetTop + sections[2].offsetHeight;
-    const inIntroArea = window.scrollY < thirdBottom - 8;
-    if (!inIntroArea) return;
-
-    const activeIndex = getActiveIndex();
-    event?.preventDefault();
-
-    if (direction > 0 && activeIndex >= sections.length - 1) {
-      scrollAfterIntro();
-      return;
-    }
-
-    if (direction < 0 && activeIndex <= 0) {
-      scrollToSection(0);
-      return;
-    }
-
-    scrollToSection(activeIndex + direction);
+    if (window.scrollY >= thirdBottom - 8) return;
+    const idx = activeIdx();
+    ev?.preventDefault();
+    if (dir > 0 && idx >= sections.length - 1) { exitSnap(); return; }
+    if (dir < 0 && idx <= 0) { goTo(0); return; }
+    goTo(idx + dir);
   };
 
-  window.addEventListener("wheel", (event) => {
-    if (Math.abs(event.deltaY) < wheelThreshold) return;
-    handleStep(event.deltaY > 0 ? 1 : -1, event);
+  window.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaY) < WHEEL_MIN) return;
+    step(e.deltaY > 0 ? 1 : -1, e);
   }, { passive: false });
 
-  window.addEventListener("touchstart", (event) => {
-    touchStartY = event.touches[0]?.clientY ?? 0;
+  window.addEventListener('touchstart', e => {
+    touchY = e.touches[0]?.clientY ?? 0;
   }, { passive: true });
 
-  window.addEventListener("touchmove", (event) => {
-    if (!touchStartY) return;
-    const currentY = event.touches[0]?.clientY ?? touchStartY;
-    const delta = touchStartY - currentY;
-    if (Math.abs(delta) < touchThreshold) return;
-    handleStep(delta > 0 ? 1 : -1, event);
-    touchStartY = 0;
+  window.addEventListener('touchmove', e => {
+    if (!touchY) return;
+    const delta = touchY - (e.touches[0]?.clientY ?? touchY);
+    if (Math.abs(delta) < TOUCH_MIN) return;
+    step(delta > 0 ? 1 : -1, e);
+    touchY = 0;
   }, { passive: false });
 
-  window.addEventListener("keydown", (event) => {
-    const downKeys = ["ArrowDown", "PageDown", " "];
-    const upKeys = ["ArrowUp", "PageUp"];
-    if (downKeys.includes(event.key)) handleStep(1, event);
-    if (upKeys.includes(event.key)) handleStep(-1, event);
+  window.addEventListener('keydown', e => {
+    if (['ArrowDown', 'PageDown', ' '].includes(e.key)) step(1, e);
+    if (['ArrowUp', 'PageUp'].includes(e.key)) step(-1, e);
   });
 }
