@@ -3,71 +3,85 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="description" content="関西の終電が消えていく様子を時間で可視化する地図。出発駅を選ぶと、各駅へ帰れる最終出発時刻がわかります。" />
+    <meta name="description" content="関西の終電を、立体の路線図で。時刻を進めると、終電が通過した区間から順に灯りが消えていきます。" />
+    <meta name="theme-color" content="#070b16" />
     <title>関西終電図 — KANSAI LAST TRAIN ATLAS</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%226%22 fill=%22%23ffd166%22/%3E%3C/svg%3E" />
-    <script type="module" crossorigin src="./assets/index-ntdHbOne.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/network-YXJz_vGy.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-D9cJQUVv.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22%3E%3Ccircle cx=%2224%22 cy=%2224%22 r=%2219%22 fill=%22none%22 stroke=%22%23ffd166%22 stroke-width=%226%22/%3E%3C/svg%3E" />
+    <script type="module" crossorigin src="./assets/index-CvuRQG7j.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DKvc65Gd.css">
   </head>
   <body>
-    <header class="top">
-      <div class="brand">
+    <div id="stage" aria-hidden="true"></div>
+    <div id="labels" aria-hidden="true"></div>
+
+    <header class="brand card">
+      <div class="mark" aria-hidden="true">終</div>
+      <div>
         <h1>関西終電図</h1>
-        <span class="sub">KANSAI LAST TRAIN ATLAS</span>
+        <p class="en">KANSAI LAST TRAIN ATLAS</p>
       </div>
-      <div class="clock" id="clock" aria-live="polite">--:--</div>
+      <p class="count"><b id="countLines">—</b>路線 <b id="countStations">—</b>駅</p>
     </header>
 
-    <div id="notice" class="notice" role="note"></div>
-
-    <main id="stage">
-      <svg id="map" role="img" aria-label="路線図"></svg>
-      <div id="view3d" class="view3d" hidden></div>
-      <div class="viewmode" role="group" aria-label="表示">
-        <button data-mode="3d" aria-pressed="true">3D</button>
-        <button data-mode="2d" aria-pressed="false">平面</button>
+    <nav class="controls" aria-label="表示の切替">
+      <div class="seg card" role="group" aria-label="立体表現">
+        <button type="button" data-mode="time" aria-pressed="true" title="終電が遅い路線ほど高く浮かべる">時刻の高さ</button>
+        <button type="button" data-mode="layer" aria-pressed="false" title="事業者ごとに階を分ける">事業者の階</button>
+        <button type="button" data-mode="map" aria-pressed="false" title="地図として平らに並べる">平面</button>
       </div>
-      <p id="hint3d" class="hint3d" hidden>高さ = 時刻。柱の高さはその駅の最終発車（出発駅を選ぶと、その駅へ帰れる最終出発時刻）。ドラッグで回転、右ドラッグで移動、ホイールで拡大。</p>
-      <div class="zoom" id="zoom">
-        <button id="zoomIn" aria-label="拡大">＋</button>
-        <button id="zoomOut" aria-label="縮小">－</button>
-        <button id="zoomReset" aria-label="全体表示">⤢</button>
-      </div>
-      <div id="tooltip" class="tooltip" hidden></div>
-    </main>
+      <button type="button" class="icon card" id="homeBtn" title="視点をもどす" aria-label="視点をもどす">⤢</button>
+      <button type="button" class="icon card" id="infoBtn" aria-label="見方を開く" aria-expanded="false">i</button>
+    </nav>
 
-    <aside class="panel" id="panel">
-      <section>
-        <label class="field">
-          <span>出発駅</span>
-          <input id="originInput" list="stationList" placeholder="駅名を入力（例: 梅田）" autocomplete="off" />
-          <datalist id="stationList"></datalist>
-        </label>
-        <p id="originSummary" class="summary">駅を選ぶと、各駅へ帰れる最終出発時刻を表示します。地図上の駅をタップしても選べます。</p>
-      </section>
-      <section id="stationInfo" hidden></section>
-      <section>
-        <h2>レイヤー</h2>
-        <div id="layers" class="layers"></div>
-      </section>
-      <footer class="fine">
-        駅座標: <a href="https://github.com/adieuadieu/japan-train-data" target="_blank" rel="noopener">japan-train-data</a> (MIT)。
-        背景地図: 地球地図日本（国土地理院）を加工して作成（<a href="https://github.com/biskwikman/jpn-atlas" target="_blank" rel="noopener">jpn-atlas</a> 経由）。
-        ダイヤ改正・遅延・臨時列車は反映されません。お出かけ前に各社の公式時刻表をご確認ください。
-      </footer>
+    <p class="notice" id="notice" hidden></p>
+
+    <aside class="panel card list" id="listPanel" aria-label="路線一覧">
+      <div class="panel-head">
+        <input id="q" type="search" placeholder="駅名・路線名で探す" autocomplete="off" aria-label="駅名・路線名で探す" />
+        <div class="sort" role="group" aria-label="並び順">
+          <button type="button" data-sort="op" aria-pressed="true">事業者順</button>
+          <button type="button" data-sort="early" aria-pressed="false">早く終わる順</button>
+          <button type="button" data-sort="late" aria-pressed="false">遅くまで走る順</button>
+        </div>
+      </div>
+      <div class="panel-body" id="listBody"></div>
+      <button type="button" class="sheet-toggle" id="sheetToggle" aria-expanded="false">路線一覧</button>
     </aside>
 
-    <footer class="timebar">
-      <button id="play" aria-label="再生">▶</button>
-      <input id="time" type="range" step="1" aria-label="時刻" />
-      <select id="speed" aria-label="再生速度">
-        <option value="1">×1</option>
-        <option value="3" selected>×3</option>
-        <option value="10">×10</option>
-      </select>
-      <button id="now" title="現在時刻">今</button>
-    </footer>
+    <aside class="panel card detail" id="detailPanel" aria-label="詳細" hidden>
+      <button type="button" class="close" id="detailClose" aria-label="詳細を閉じる">×</button>
+      <div class="panel-body" id="detailBody"></div>
+    </aside>
 
+    <section class="timebar card" aria-label="時刻">
+      <div class="clock">
+        <p class="clock-label" id="clockLabel">表示中の時刻</p>
+        <p class="clock-time" id="clockTime">--:--</p>
+      </div>
+      <div class="track-wrap">
+        <input id="time" type="range" step="1" aria-label="時刻" />
+        <div class="ticks" id="ticks" aria-hidden="true"></div>
+        <p class="status" id="status"></p>
+      </div>
+      <div class="tb-buttons">
+        <button type="button" class="round" id="playBtn" aria-label="時刻を進める">▶</button>
+        <button type="button" class="pill" id="nowBtn">いまの時刻</button>
+      </div>
+    </section>
+
+    <div class="info card" id="infoPop" hidden>
+      <h2>見方</h2>
+      <ul>
+        <li><b>帯の左右</b>は進行方向の違いです（日本の鉄道は左側通行）。終電が通過した区間から、その方向の帯が灰色に変わります。</li>
+        <li><b>光る点</b>は、いま走っている「その区間の最終列車」です。</li>
+        <li><b>時刻の高さ</b>では、終電が遅い路線ほど高く浮かびます。上がってくる半透明の面が現在の時刻です。</li>
+        <li>駅を選ぶと、方面別の最終発車がわかります。「この駅から帰る」で、その夜のうちに着ける駅（白）ともう着けない駅（赤）を表示します。</li>
+        <li>ドラッグで回転、右ドラッグ（2本指）で移動、ホイール（ピンチ）で拡大縮小します。</li>
+      </ul>
+      <p class="credits" id="credits"></p>
+      <p class="note">ダイヤ改正や遅延・臨時列車は反映されません。お出かけ前に各社の公式時刻表をご確認ください。</p>
+    </div>
+
+    <div class="tip" id="tip" hidden></div>
   </body>
 </html>
