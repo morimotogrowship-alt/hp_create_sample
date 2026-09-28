@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MINAMO — 水面の庭</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #e8e9e5; }
+  body { font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; color: #2c332e; }
+  canvas { display: block; touch-action: none; }
+  .ui { position: fixed; pointer-events: none; }
+  .brand { top: 32px; left: 40px; }
+  .brand .eyebrow { font-size: 10px; letter-spacing: .32em; opacity: .6; }
+  .brand h1 { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 58px; letter-spacing: .08em; line-height: 1; margin-top: 10px; }
+  .brand h1 small { font-family: "Shippori Mincho", serif; font-size: 13px; letter-spacing: .2em; margin-left: 10px; vertical-align: middle; }
+  .brand p { font-size: 12px; margin-top: 14px; letter-spacing: .12em; opacity: .75; }
+  .meta { top: 36px; right: 40px; text-align: right; }
+  .meta .eyebrow { font-size: 10px; letter-spacing: .28em; opacity: .55; }
+  .meta .chapter { font-size: 20px; margin-top: 8px; letter-spacing: .1em; }
+  .meta .sub { font-size: 10px; opacity: .5; margin-top: 10px; letter-spacing: .1em; }
+  .hint { bottom: 38px; left: 40px; max-width: 360px; }
+  .hint .en { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 13px; opacity: .6; }
+  .hint .ja { font-size: 15px; margin-top: 6px; letter-spacing: .12em; }
+  .note { bottom: 38px; right: 40px; text-align: right; font-size: 11px; line-height: 1.9; opacity: .55; letter-spacing: .08em; }
+  .dock { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); display: flex; gap: 6px; padding: 6px; border-radius: 999px;
+          background: rgba(250, 250, 247, .82); backdrop-filter: blur(10px); box-shadow: 0 6px 24px rgba(40, 50, 45, .12); }
+  .dock button { font-family: inherit; font-size: 12px; letter-spacing: .1em; border: 0; background: transparent; color: #2c332e;
+                 padding: 10px 18px; border-radius: 999px; cursor: pointer; white-space: nowrap; transition: background .25s, color .25s; }
+  .dock button:hover { background: rgba(44, 51, 46, .08); }
+  .dock button.active { background: #2f4a3a; color: #f4f4ef; }
+  .dock button.gate.open { background: #5f7f6b; color: #f4f4ef; }
+  .dock .sep { width: 1px; background: rgba(44, 51, 46, .15); margin: 6px 2px; }
+  #err { position: fixed; inset: 0; display: none; place-items: center; font-size: 14px; }
+  @media (max-width: 1100px) { .hint { bottom: 100px; } .note { display: none; } }
+  @media (max-width: 720px) {
+    .brand { top: 18px; left: 18px; } .brand h1 { font-size: 40px; }
+    .meta, .note { display: none; }
+    .hint { left: 18px; bottom: 96px; }
+    .dock button { padding: 9px 12px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="ui brand">
+  <div class="eyebrow">A QUIET GARDEN OF LIVING WATER</div>
+  <h1>MINAMO<small>水面の庭</small></h1>
+  <p>ふれると、流れがうまれる。</p>
+</div>
+<div class="ui meta">
+  <div class="eyebrow">INTERACTIVE WATER STUDY</div>
+  <div class="chapter">流 ／ Flow</div>
+  <div class="sub">Heightfield · Flow field · Refraction</div>
+</div>
+<div class="ui hint">
+  <div class="en" id="hintEn">stir the surface</div>
+  <div class="ja" id="hintJa">水面をなぞると、流れが葉を運ぶ。</div>
+</div>
+<div class="ui note">ゆっくり動かすと、さざ波。<br />すばやく動かすと、渦がのこる。</div>
+<div class="dock">
+  <button data-mode="stone">石を動かす</button>
+  <button data-mode="touch" class="active">水に触れる</button>
+  <span class="sep"></span>
+  <button class="gate" id="gateBtn">水門を開く</button>
+  <button id="resetBtn" title="葉を戻す">↺</button>
+</div>
+<div id="err">WebGL2 が利用できない環境です。</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.169.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ---------------------------------------------------------------------------
+// 定数
+// ---------------------------------------------------------------------------
+const POOL_W = 20, POOL_D = 14;           // 池の内寸（x, z）
+const HW = POOL_W / 2, HD = POOL_D / 2;
+const FLOOR_Y = -1.25;                    // 池底
+const RIM_Y = 0.3;                        // 縁の天端
+const SIM = 256;                          // 波動シミュレーション解像度
+const H_SCALE = 0.3;                     // 高さテクスチャ→ワールド高さ
+const GX = 80, GZ = 56;                   // 流れ場グリッド（CPU）
+const CELL = POOL_W / GX;
+const LEAF_COUNT = 64;
+
+// ---------------------------------------------------------------------------
+// renderer / scene / camera
+// ---------------------------------------------------------------------------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+if (!renderer.capabilities.isWebGL2) document.getElementById('err').style.display = 'grid';
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = false;
+document.body.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#e8e9e5');
+scene.fog = new THREE.Fog('#e8e9e5', 38, 70);
+
+const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 200);
+camera.position.set(0, 18.5, 23);
+camera.lookAt(0, -1.8, -0.2);
+
+scene.add(new THREE.HemisphereLight('#ffffff', '#6f776c', 1.1));
+const sun = new THREE.DirectionalLight('#fffaf0', 2.4);
+sun.position.set(-9, 20, 7);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -17, right: 17, top: 14, bottom: -14, near: 1, far: 60 });
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.02;
+scene.add(sun);
+
+// ---------------------------------------------------------------------------
+// 波動シミュレーション（GPU・ピンポン）
+//   R = 高さ, G = 鉛直速度
+// ---------------------------------------------------------------------------
+const rtOpts = { type: THREE.HalfFloatType, format: THREE.RGBAFormat, minFilter: THREE.LinearFilter,
+                 magFilter: THREE.LinearFilter, depthBuffer: false, wrapS: THREE.ClampToEdgeWrapping, wrapT: THREE.ClampToEdgeWrapping };
+let simA = new THREE.WebGLRenderTarget(SIM, SIM, rtOpts);
+let simB = new THREE.WebGLRenderTarget(SIM, SIM, rtOpts);
+const MAX_DROPS = 24;
+const simMat = new THREE.ShaderMaterial({
+  uniforms: {
+    tPrev: { value: null },
+    texel: { value: new THREE.Vector2(1 / SIM, 1 / SIM) },
+    drops: { value: Array.from({ length: MAX_DROPS }, () => new THREE.Vector4()) },
+    nDrops: { value: 0 },
+    aspect: { value: new THREE.Vector2(1, POOL_D / POOL_W) },
+    stone: { value: new THREE.Vector3(0, 0, 0) },
+  },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+  fragmentShader: /* glsl */`
+    precision highp float;
+    uniform sampler2D tPrev; uniform vec2 texel; uniform vec4 drops[${MAX_DROPS}];
+    uniform int nDrops; uniform vec2 aspect; uniform vec3 stone;
+    varying vec2 vUv;
+    void main(){
+      vec4 c = texture2D(tPrev, vUv);
+      float avg = 0.25 * (texture2D(tPrev, vUv - vec2(texel.x, 0.)).r + texture2D(tPrev, vUv + vec2(texel.x, 0.)).r
+                        + texture2D(tPrev, vUv - vec2(0., texel.y)).r + texture2D(tPrev, vUv + vec2(0., texel.y)).r);
+      c.g += (avg - c.r) * 2.0;
+      c.g *= 0.994;
+      c.r += c.g;
+      c.r *= 0.9985;
+      for (int i = 0; i < ${MAX_DROPS}; i++) {
+        if (i >= nDrops) break;
+        vec4 d = drops[i];
+        vec2 dd = vUv - d.xy;
+        dd.y *= aspect.y;
+        c.r += d.w * exp(-dot(dd, dd) / (d.z * d.z));
+      }
+      vec2 sd = (vUv - stone.xy); sd.y *= aspect.y;
+      if (length(sd) < stone.z) { c.r *= 0.6; c.g *= 0.6; }
+      gl_FragColor = c;
+    }`,
+});
+const simScene = new THREE.Scene();
+const simCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+simScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), simMat));
+const pendingDrops = [];
+// x,z: ワールド座標 / r: ワールド半径 / s: 強さ
+function addDrop(x, z, r, s) {
+  if (pendingDrops.length >= MAX_DROPS) pendingDrops.shift();
+  pendingDrops.push([(x + HW) / POOL_W, (z + HD) / POOL_D, r / POOL_W, s]);
+}
+function stepWaves(steps) {
+  for (let k = 0; k < steps; k++) {
+    const n = k === 0 ? pendingDrops.length : 0;
+    for (let i = 0; i < n; i++) simMat.uniforms.drops.value[i].fromArray(pendingDrops[i]);
+    simMat.uniforms.nDrops.value = n;
+    simMat.uniforms.tPrev.value = simA.texture;
+    renderer.setRenderTarget(simB);
+    renderer.render(simScene, simCam);
+    [simA, simB] = [simB, simA];
+  }
+  pendingDrops.length = 0;
+}
+
+// 高さマップ共有 uniform
+const shared = {
+  tHeight: { value: simA.texture },
+  poolSize: { value: new THREE.Vector2(POOL_W, POOL_D) },
+  hScale: { value: H_SCALE },
+  hTexel: { value: new THREE.Vector2(1 / SIM, 1 / SIM) },
+  uTime: { value: 0 },
+};
+
+// ---------------------------------------------------------------------------
+// 水中マテリアル化（コースティクス＋水の色味）
+// ---------------------------------------------------------------------------
+function underwater(mat) {
+  mat.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, shared);
+    sh.vertexShader = 'varying vec3 vWPos;\n' + sh.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
+      vec4 cwp = vec4(transformed, 1.0);
+      #ifdef USE_INSTANCING
+        cwp = instanceMatrix * cwp;
+      #endif
+      vWPos = (modelMatrix * cwp).xyz;`);
+    sh.fragmentShader = `varying vec3 vWPos;
+      uniform sampler2D tHeight; uniform vec2 poolSize; uniform vec2 hTexel; uniform float uTime;\n` +
+      sh.fragmentShader.replace('#include <opaque_fragment>', `
+      if (vWPos.y < 0.0) {
+        vec2 huv = vWPos.xz / poolSize + 0.5;
+        float caus = 0.0;
+        if (huv.x > 0.0 && huv.x < 1.0 && huv.y > 0.0 && huv.y < 1.0) {
+          float c0 = texture2D(tHeight, huv).r;
+          float lap = texture2D(tHeight, huv + vec2(hTexel.x, 0.)).r + texture2D(tHeight, huv - vec2(hTexel.x, 0.)).r
+                    + texture2D(tHeight, huv + vec2(0., hTexel.y)).r + texture2D(tHeight, huv - vec2(0., hTexel.y)).r - 4.0 * c0;
+          caus = clamp(-lap * 34.0, -0.45, 1.6);
+        }
+        // 静かな揺らぎのコースティクス
+        vec2 p = vWPos.xz * 1.7;
+        float w = sin(p.x + uTime * 0.7) + sin(p.y * 1.13 - uTime * 0.6) + sin((p.x + p.y) * 0.83 + uTime * 0.5);
+        caus += pow(1.0 - abs(w) / 3.0, 6.0) * 0.28;
+        float depth = clamp(-vWPos.y / 1.4, 0.0, 1.0);
+        outgoingLight *= (1.0 + caus) * mix(vec3(1.0), vec3(0.80, 0.90, 0.87), depth);
+      }
+      #include <opaque_fragment>`);
+  };
+  return mat;
+}
+
+// ---------------------------------------------------------------------------
+// ユーティリティ：ノイズ・テクスチャ
+// ---------------------------------------------------------------------------
+let seed = 7;
+const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const rr = (a, b) => a + (b - a) * rand();
+function hash3(x, y, z) { const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return s - Math.floor(s); }
+function noise3(x, y, z) {
+  const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
+  const xf = x - xi, yf = y - yi, zf = z - zi;
+  const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf), w = zf * zf * (3 - 2 * zf);
+  const L = (a, b, t) => a + (b - a) * t;
+  const h = (dx, dy, dz) => hash3(xi + dx, yi + dy, zi + dz);
+  return L(L(L(h(0,0,0), h(1,0,0), u), L(h(0,1,0), h(1,1,0), u), v),
+           L(L(h(0,0,1), h(1,0,1), u), L(h(0,1,1), h(1,1,1), u), v), w) * 2 - 1;
+}
+function concreteTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d');
+  g.fillStyle = '#9ea39c'; g.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 9000; i++) {
+    const v = 130 + rand() * 60 | 0;
+    g.fillStyle = `rgba(${v},${v + 3},${v},${rand() * 0.35})`;
+    g.fillRect(rand() * 256, rand() * 256, rand() * 2 + 0.5, rand() * 2 + 0.5);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.repeat.set(3, 3);
+  return t;
+}
+
+// ---------------------------------------------------------------------------
+// 池：縁・底・玉石
+// ---------------------------------------------------------------------------
+const concrete = new THREE.MeshStandardMaterial({ map: concreteTexture(), color: '#b9bdb6', roughness: 0.92 });
+const wallMat = underwater(concrete.clone());
+function box(w, h, d, x, y, z, mat = wallMat) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; scene.add(m); return m;
+}
+const T = 1.6, BOT = -3.2, WH = RIM_Y - BOT, WY = (RIM_Y + BOT) / 2;
+const GATE_HALF = 2.1;
+box(T, WH, POOL_D + 2 * T, -HW - T / 2, WY, 0);                                 // 左
+box(T, WH, POOL_D + 2 * T, HW + T / 2, WY, 0);                                  // 右
+box(HW - GATE_HALF, WH, T, -(HW + GATE_HALF) / 2, WY, -HD - T / 2);             // 奥（左）
+box(HW - GATE_HALF, WH, T, (HW + GATE_HALF) / 2, WY, -HD - T / 2);              // 奥（右）
+box(POOL_W + 2 * T, WH, 2.4, 0, WY, HD + 1.2);                                  // 手前（広い縁）
+box(POOL_W + 2 * T + 2, 0.9, 3.2, 0, -1.9, HD + 3.8, concrete);                 // 手前の低い段
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: '#dfe0db', roughness: 1 }));
+ground.rotation.x = -Math.PI / 2; ground.position.y = BOT; ground.receiveShadow = true; scene.add(ground);
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(POOL_W, POOL_D + 7), underwater(new THREE.MeshStandardMaterial({ color: '#34382f', roughness: 1 })));
+floor.rotation.x = -Math.PI / 2; floor.position.set(0, FLOOR_Y, -3.5); floor.receiveShadow = true; scene.add(floor);
+
+// 玉石
+function pebbleGeo(detail, s) {
+  const g = new THREE.IcosahedronGeometry(1, detail);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    const n = 1 + 0.12 * noise3(x * 1.6 + s, y * 1.6, z * 1.6 - s);
+    p.setXYZ(i, x * n, y * n, z * n);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+const pebbleMat = underwater(new THREE.MeshStandardMaterial({ roughness: 0.7, metalness: 0.0 }));
+function scatterPebbles(count, xmin, xmax, zmin, zmax, geoSeed) {
+  const mesh = new THREE.InstancedMesh(pebbleGeo(1, geoSeed), pebbleMat, count);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), s = new THREE.Vector3(), pos = new THREE.Vector3();
+  const col = new THREE.Color();
+  for (let i = 0; i < count; i++) {
+    const r = rr(0.1, 0.26);
+    s.set(r * rr(1, 1.5), r * rr(0.4, 0.6), r * rr(0.8, 1.2));
+    e.set(rr(-0.2, 0.2), rand() * Math.PI * 2, rr(-0.2, 0.2)); q.setFromEuler(e);
+    pos.set(rr(xmin, xmax), FLOOR_Y + s.y * rr(0.2, 0.7), rr(zmin, zmax));
+    m.compose(pos, q, s); mesh.setMatrixAt(i, m);
+    const v = rr(0.08, 0.42), warm = rr(-0.03, 0.03);
+    col.setRGB(v + warm, v + 0.01, v - warm); mesh.setColorAt(i, col);
+  }
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+for (let k = 0; k < 3; k++) scatterPebbles(1900, -HW + 0.1, HW - 0.1, -HD + 0.1, HD - 0.1, k * 3.1);
+scatterPebbles(700, -GATE_HALF, GATE_HALF, -HD - 5.5, -HD, 9.7);
+
+// ---------------------------------------------------------------------------
+// 岩（苔付き）と草
+// ---------------------------------------------------------------------------
+function rockGeo(r, s, flat, moss) {
+  const g = new THREE.IcosahedronGeometry(r, 4);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i) / r, y = p.getY(i) / r, z = p.getZ(i) / r;
+    const n = 1 + 0.22 * noise3(x * 1.3 + s, y * 1.3, z * 1.3) + 0.07 * noise3(x * 3.5, y * 3.5 + s, z * 3.5);
+    p.setXYZ(i, x * r * n, y * r * n * flat, z * r * n);
+  }
+  g.computeVertexNormals();
+  const nrm = g.attributes.normal, cols = [];
+  const c = new THREE.Color();
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    const m = nrm.getY(i) + 0.35 * noise3(x * 2 + s, y * 2, z * 2);
+    if (moss && m > 0.15) c.setRGB(0.16 + 0.08 * noise3(x * 5, y * 5, z * 5), 0.42 + 0.1 * noise3(z * 4, x * 4, y), 0.1);
+    else { const v = 0.36 + 0.07 * noise3(x * 4, y * 4, z * 4 + s); c.setRGB(v, v + 0.02, v); }
+    cols.push(c.r, c.g, c.b);
+  }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  return g;
+}
+const rockMat = underwater(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95 }));
+function rock(r, s, flat, moss, x, y, z, ry = 0) {
+  const m = new THREE.Mesh(rockGeo(r, s, flat, moss), rockMat);
+  m.position.set(x, y, z); m.rotation.y = ry; m.castShadow = m.receiveShadow = true; scene.add(m); return m;
+}
+rock(2.0, 1.2, 0.75, true, -10.2, 0.7, -6.4, 0.4);
+rock(1.5, 4.4, 0.7, false, -7.4, 0.45, -5.9, 1.2);
+rock(1.3, 2.7, 0.7, true, -12.2, 0.4, -4.6);
+rock(1.6, 6.1, 0.72, true, 10.6, 0.55, -5.2, 2.0);
+rock(1.9, 3.3, 0.8, true, 11.4, 0.6, 5.6, 0.7);
+rock(1.1, 8.8, 0.7, true, 10.2, 0.3, 3.4);
+
+function grassTuft(x, y, z, n, hMax) {
+  const pos = [], col = [];
+  for (let i = 0; i < n; i++) {
+    const a = rand() * Math.PI * 2, h = rr(0.5, hMax), w = rr(0.04, 0.08);
+    const lean = rr(0.15, 0.6), bx = Math.cos(a) * 0.15, bz = Math.sin(a) * 0.15;
+    const tx = bx + Math.cos(a) * lean, tz = bz + Math.sin(a) * lean;
+    const px = -Math.sin(a) * w, pz = Math.cos(a) * w;
+    pos.push(bx - px, 0, bz - pz, bx + px, 0, bz + pz, tx, h, tz);
+    const g = rr(0.35, 0.55);
+    col.push(0.12, g * 0.7, 0.08, 0.12, g * 0.7, 0.08, 0.45, g + 0.25, 0.18);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, side: THREE.DoubleSide, roughness: 0.8 }));
+  m.position.set(x, y, z); m.castShadow = true; scene.add(m);
+}
+grassTuft(-11.3, 1.4, -6.9, 30, 1.4); grassTuft(-8.9, RIM_Y, -7.7, 22, 1.1); grassTuft(-12.4, 0.9, -4.0, 18, 1.0);
+grassTuft(11.3, 1.2, -5.8, 34, 1.6); grassTuft(12.1, RIM_Y, -3.5, 16, 1.0); grassTuft(12.0, 1.4, 5.0, 24, 1.2);
+
+// ---------------------------------------------------------------------------
+// 水門
+// ---------------------------------------------------------------------------
+const timber = new THREE.MeshStandardMaterial({ color: '#3a3d38', roughness: 0.85 });
+const GZP = -HD - T / 2;
+box(0.45, 4.8, 0.45, -GATE_HALF - 0.25, 0.9, GZP, timber);
+box(0.45, 4.8, 0.45, GATE_HALF + 0.25, 0.9, GZP, timber);
+box(2 * GATE_HALF + 1.4, 0.45, 0.5, 0, 3.3, GZP, timber);
+box(0.9, WH, 6, -GATE_HALF - 0.45, WY, -HD - T - 2.6);                             // 導水路の側壁
+box(0.9, WH, 6, GATE_HALF + 0.45, WY, -HD - T - 2.6);
+const sluice = box(2 * GATE_HALF + 0.1, 1.9, 0.18, 0, FLOOR_Y + 0.95, GZP, new THREE.MeshStandardMaterial({ color: '#4d4a42', roughness: 0.8 }));
+const channelWater = new THREE.Mesh(new THREE.PlaneGeometry(2 * GATE_HALF, 6.2),
+  new THREE.MeshStandardMaterial({ color: '#8d9993', roughness: 0.08, metalness: 0.3, transparent: true, opacity: 0.55 }));
+channelWater.rotation.x = -Math.PI / 2; channelWater.position.set(0, -0.02, -HD - 3.1); scene.add(channelWater);
+
+// ---------------------------------------------------------------------------
+// 動かせる石
+// ---------------------------------------------------------------------------
+const STONE_R = 1.35;
+const stoneMesh = rock(STONE_R, 5.5, 0.5, false, 3.6, FLOOR_Y + 1.25, 0.2);
+stoneMesh.scale.set(1.25, 1, 0.95);
+const stoneVel = new THREE.Vector2();
+
+// ---------------------------------------------------------------------------
+// 水面（画面空間の屈折＋フレネル反射）
+// ---------------------------------------------------------------------------
+const sceneRT = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType });
+const waterMat = new THREE.ShaderMaterial({
+  uniforms: {
+    ...shared,
+    tScene: { value: sceneRT.texture },
+    resolution: { value: new THREE.Vector2() },
+    sunDir: { value: sun.position.clone().normalize() },
+  },
+  vertexShader: /* glsl */`
+    uniform sampler2D tHeight; uniform vec2 poolSize; uniform float hScale;
+    varying vec3 vWorld; varying vec2 vHUv;
+    void main(){
+      vec4 wp = modelMatrix * vec4(position, 1.0);
+      vHUv = wp.xz / poolSize + 0.5;
+      wp.y += texture2D(tHeight, vHUv).r * hScale;
+      vWorld = wp.xyz;
+      gl_Position = projectionMatrix * viewMatrix * wp;
+    }`,
+  fragmentShader: /* glsl */`
+    uniform sampler2D tHeight; uniform sampler2D tScene; uniform vec2 poolSize; uniform vec2 hTexel;
+    uniform float hScale; uniform vec2 resolution; uniform vec3 sunDir;
+    varying vec3 vWorld; varying vec2 vHUv;
+    void main(){
+      float l = texture2D(tHeight, vHUv - vec2(hTexel.x, 0.)).r, r = texture2D(tHeight, vHUv + vec2(hTexel.x, 0.)).r;
+      float d = texture2D(tHeight, vHUv - vec2(0., hTexel.y)).r, u = texture2D(tHeight, vHUv + vec2(0., hTexel.y)).r;
+      vec2 cell = poolSize * hTexel * 2.0;
+      vec3 n = normalize(vec3(-(r - l) * hScale / cell.x, 1.0, -(u - d) * hScale / cell.y));
+      vec3 V = normalize(cameraPosition - vWorld);
+      vec2 suv = gl_FragCoord.xy / resolution;
+      vec2 off = n.xz * 0.11;
+      vec3 refr = vec3(texture2D(tScene, suv + off * 1.0).r, texture2D(tScene, suv + off * 1.04).g, texture2D(tScene, suv + off * 1.08).b);
+      refr *= vec3(0.93, 0.98, 0.96);
+      float fres = 0.02 + 0.98 * pow(1.0 - max(dot(n, V), 0.0), 5.0);
+      vec3 R = reflect(-V, n);
+      vec3 sky = mix(vec3(0.80, 0.83, 0.80), vec3(0.98, 0.98, 0.96), smoothstep(-0.1, 0.6, R.y));
+      vec3 col = mix(refr, sky, clamp(0.06 + fres * 0.9, 0.0, 0.75));
+      float spec = pow(max(dot(R, normalize(sunDir)), 0.0), 320.0);
+      col += vec3(1.0, 0.98, 0.94) * spec * 2.2;
+      // 壁際の暗がり
+      vec2 e = min(vHUv, 1.0 - vHUv) * poolSize;
+      col *= mix(0.78, 1.0, smoothstep(0.0, 0.9, min(e.x, e.y)));
+      gl_FragColor = vec4(col, 1.0);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`,
+});
+const waterGeo = new THREE.PlaneGeometry(POOL_W, POOL_D, 220, 154);
+waterGeo.rotateX(-Math.PI / 2);
+const water = new THREE.Mesh(waterGeo, waterMat);
+scene.add(water);
+
+// ---------------------------------------------------------------------------
+// 流れ場（CPU・簡易 stable fluids）
+// ---------------------------------------------------------------------------
+const N = GX * GZ;
+let U = new Float32Array(N), V = new Float32Array(N), U2 = new Float32Array(N), V2 = new Float32Array(N);
+const P = new Float32Array(N), DIV = new Float32Array(N), SOLID = new Uint8Array(N);
+const I = (i, j) => i + j * GX;
+function sampleField(F, gx, gz) {
+  gx = Math.min(Math.max(gx, 0), GX - 1.001); gz = Math.min(Math.max(gz, 0), GZ - 1.001);
+  const i = gx | 0, j = gz | 0, fx = gx - i, fz = gz - j;
+  return (F[I(i, j)] * (1 - fx) + F[I(i + 1, j)] * fx) * (1 - fz) + (F[I(i, j + 1)] * (1 - fx) + F[I(i + 1, j + 1)] * fx) * fz;
+}
+const toGrid = (x, z) => [(x + HW) / CELL - 0.5, (z + HD) / CELL - 0.5];
+function sampleVel(x, z) { const [gx, gz] = toGrid(x, z); return [sampleField(U, gx, gz), sampleField(V, gx, gz)]; }
+function splat(x, z, vx, vz, radius, amt) {
+  const [cx, cz] = toGrid(x, z), rc = radius / CELL;
+  for (let j = Math.max(1, (cz - rc) | 0); j <= Math.min(GZ - 2, (cz + rc + 1) | 0); j++)
+    for (let i = Math.max(1, (cx - rc) | 0); i <= Math.min(GX - 2, (cx + rc + 1) | 0); i++) {
+      const d2 = ((i - cx) ** 2 + (j - cz) ** 2) / (rc * rc);
+      if (d2 > 1) continue;
+      const w = amt * (1 - d2), k = I(i, j);
+      U[k] += (vx - U[k]) * w; V[k] += (vz - V[k]) * w;
+    }
+}
+function fluidStep(dt) {
+  // 障害物（石）
+  SOLID.fill(0);
+  const [scx, scz] = toGrid(stoneMesh.position.x, stoneMesh.position.z), src = STONE_R * 1.05 / CELL;
+  for (let j = 0; j < GZ; j++) for (let i = 0; i < GX; i++) if ((i - scx) ** 2 + (j - scz) ** 2 < src * src) SOLID[I(i, j)] = 1;
+  // 移流
+  const s = dt / CELL;
+  for (let j = 0; j < GZ; j++) for (let i = 0; i < GX; i++) {
+    const k = I(i, j);
+    const px = i - U[k] * s, pz = j - V[k] * s;
+    U2[k] = sampleField(U, px, pz) * 0.992; V2[k] = sampleField(V, px, pz) * 0.992;
+  }
+  [U, U2] = [U2, U]; [V, V2] = [V2, V];
+  // 境界
+  for (let j = 0; j < GZ; j++) for (let i = 0; i < GX; i++) {
+    const k = I(i, j);
+    if (SOLID[k]) { U[k] = stoneVel.x; V[k] = stoneVel.y; }
+    if (i === 0 || i === GX - 1) U[k] = 0;
+    if (j === 0 || j === GZ - 1) V[k] = 0;
+  }
+  // 発散→圧力→投影
+  for (let j = 1; j < GZ - 1; j++) for (let i = 1; i < GX - 1; i++)
+    DIV[I(i, j)] = 0.5 * (U[I(i + 1, j)] - U[I(i - 1, j)] + V[I(i, j + 1)] - V[I(i, j - 1)]);
+  P.fill(0);
+  for (let it = 0; it < 18; it++)
+    for (let j = 1; j < GZ - 1; j++) for (let i = 1; i < GX - 1; i++) {
+      const k = I(i, j);
+      P[k] = (P[k - 1] + P[k + 1] + P[k - GX] + P[k + GX] - DIV[k]) * 0.25;
+    }
+  for (let j = 1; j < GZ - 1; j++) for (let i = 1; i < GX - 1; i++) {
+    const k = I(i, j);
+    U[k] -= 0.5 * (P[k + 1] - P[k - 1]); V[k] -= 0.5 * (P[k + GX] - P[k - GX]);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 葉
+// ---------------------------------------------------------------------------
+const leafShape = new THREE.Shape();
+leafShape.moveTo(-0.3, 0);
+leafShape.quadraticCurveTo(-0.02, 0.28, 0.32, 0);
+leafShape.quadraticCurveTo(-0.02, -0.28, -0.3, 0);
+const leafGeo = new THREE.ShapeGeometry(leafShape, 6);
+leafGeo.rotateX(-Math.PI / 2);
+leafGeo.translate(0, 0.035, 0);
+const leafMat = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.55 });
+leafMat.onBeforeCompile = (sh) => {
+  Object.assign(sh.uniforms, shared);
+  sh.vertexShader = 'uniform sampler2D tHeight; uniform vec2 poolSize; uniform float hScale;\n' +
+    sh.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
+      #ifdef USE_INSTANCING
+        vec4 iw = modelMatrix * instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+        transformed.y += texture2D(tHeight, iw.xz / poolSize + 0.5).r * hScale;
+      #endif`);
+};
+const leaves = new THREE.InstancedMesh(leafGeo, leafMat, LEAF_COUNT);
+leaves.castShadow = true;
+scene.add(leaves);
+const leafState = [];
+const leafPalette = ['#e3c93a', '#d4b92c', '#c9c23d', '#b9bf3c', '#e8d04e', '#a9b53a'];
+function resetLeaves() {
+  leafState.length = 0;
+  for (let i = 0; i < LEAF_COUNT; i++) {
+    let x, z;
+    do { x = rr(-HW + 0.6, HW - 0.6); z = rr(-HD + 0.6, HD - 0.6); }
+    while (Math.hypot(x - stoneMesh.position.x, z - stoneMesh.position.z) < STONE_R + 0.5);
+    leafState.push({ x, z, vx: 0, vz: 0, a: rand() * Math.PI * 2, w: 0, s: rr(0.75, 1.2) });
+    leaves.setColorAt(i, new THREE.Color(leafPalette[i % leafPalette.length]).multiplyScalar(rr(0.85, 1.05)));
+  }
+  leaves.instanceColor.needsUpdate = true;
+}
+resetLeaves();
+const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _up = new THREE.Vector3(0, 1, 0);
+function updateLeaves(dt, t) {
+  for (const L of leafState) {
+    let [fx, fz] = sampleVel(L.x, L.z);
+    // ごく弱い常流（静止しすぎないように）
+    fx += 0.05 * Math.sin(L.z * 0.3 + t * 0.1); fz += 0.05 * Math.cos(L.x * 0.25 - t * 0.08);
+    const k = Math.min(1, dt * 2.2 / L.s);
+    L.vx += (fx - L.vx) * k; L.vz += (fz - L.vz) * k;
+    // 渦度で回転
+    const [gx, gz] = toGrid(L.x, L.z);
+    const curl = (sampleField(V, gx + 1, gz) - sampleField(V, gx - 1, gz) - sampleField(U, gx, gz + 1) + sampleField(U, gx, gz - 1)) / (2 * CELL);
+    L.w += (curl * 0.5 - L.w) * k;
+    L.a += L.w * dt;
+    L.x += L.vx * dt; L.z += L.vz * dt;
+  }
+  // 葉同士・壁・石
+  for (let i = 0; i < leafState.length; i++) {
+    const A = leafState[i];
+    for (let j = i + 1; j < leafState.length; j++) {
+      const B = leafState[j], dx = B.x - A.x, dz = B.z - A.z, d2 = dx * dx + dz * dz;
+      if (d2 < 0.2 && d2 > 1e-6) { const d = Math.sqrt(d2), push = (0.45 - d) * 0.5 / d; A.x -= dx * push; A.z -= dz * push; B.x += dx * push; B.z += dz * push; }
+    }
+    const m = 0.3;
+    if (A.x < -HW + m) { A.x = -HW + m; A.vx = Math.abs(A.vx) * 0.3; }
+    if (A.x > HW - m) { A.x = HW - m; A.vx = -Math.abs(A.vx) * 0.3; }
+    if (A.z < -HD + m) { A.z = -HD + m; A.vz = Math.abs(A.vz) * 0.3; }
+    if (A.z > HD - m) { A.z = HD - m; A.vz = -Math.abs(A.vz) * 0.3; }
+    const sx = A.x - stoneMesh.position.x, sz = A.z - stoneMesh.position.z, sd = Math.hypot(sx, sz), lim = STONE_R * 1.15 + 0.2;
+    if (sd < lim) { A.x += sx / sd * (lim - sd); A.z += sz / sd * (lim - sd); }
+    _q.setFromAxisAngle(_up, A.a); _s.setScalar(A.s); _p.set(A.x, 0, A.z);
+    leaves.setMatrixAt(i, _m.compose(_p, _q, _s));
+  }
+  leaves.instanceMatrix.needsUpdate = true;
+}
+
+// ---------------------------------------------------------------------------
+// 操作
+// ---------------------------------------------------------------------------
+let mode = 'touch', gateOpen = false, gateAmt = 0;
+const hints = {
+  touch: ['stir the surface', '水面をなぞると、流れが葉を運ぶ。'],
+  stone: ['move the stone', '石をつかんで動かすと、水が押しのけられる。'],
+};
+document.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll('[data-mode]').forEach((o) => o.classList.toggle('active', o === b));
+  document.getElementById('hintEn').textContent = hints[mode][0];
+  document.getElementById('hintJa').textContent = hints[mode][1];
+}));
+const gateBtn = document.getElementById('gateBtn');
+gateBtn.addEventListener('click', () => {
+  gateOpen = !gateOpen;
+  gateBtn.classList.toggle('open', gateOpen);
+  gateBtn.textContent = gateOpen ? '水門を閉じる' : '水門を開く';
+  document.getElementById('hintEn').textContent = gateOpen ? 'open the sluice' : hints[mode][0];
+  document.getElementById('hintJa').textContent = gateOpen ? '水門を開くと、奥から水が流れこむ。' : hints[mode][1];
+});
+document.getElementById('resetBtn').addEventListener('click', resetLeaves);
+
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+const waterPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const hit = new THREE.Vector3();
+const pointer = { over: false, down: false, x: 0, z: 0, px: 0, pz: 0, moved: false, dragStone: false, grab: new THREE.Vector2() };
+function pick(e) {
+  ndc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  return ray.ray.intersectPlane(waterPlane, hit) && Math.abs(hit.x) < HW && Math.abs(hit.z) < HD;
+}
+const canvas = renderer.domElement;
+canvas.addEventListener('pointerdown', (e) => {
+  canvas.setPointerCapture(e.pointerId);
+  pointer.down = true;
+  const onWater = pick(e);
+  if (mode === 'stone' && ray.intersectObject(stoneMesh).length) {
+    pointer.dragStone = true;
+    if (ray.ray.intersectPlane(waterPlane, hit)) pointer.grab.set(stoneMesh.position.x - hit.x, stoneMesh.position.z - hit.z);
+    canvas.style.cursor = 'grabbing';
+  } else if (mode === 'touch' && onWater) {
+    addDrop(hit.x, hit.z, 0.45, -0.25);
+  }
+  if (onWater && pick(e)) { pointer.x = pointer.px = hit.x; pointer.z = pointer.pz = hit.z; pointer.over = true; }
+});
+canvas.addEventListener('pointermove', (e) => {
+  pointer.over = pick(e);
+  if (pointer.over || pointer.dragStone) {
+    if (!pointer.moved) { pointer.px = hit.x; pointer.pz = hit.z; }
+    pointer.x = hit.x; pointer.z = hit.z; pointer.moved = true;
+  }
+  if (mode === 'stone' && !pointer.dragStone) {
+    ray.setFromCamera(ndc, camera);
+    canvas.style.cursor = ray.intersectObject(stoneMesh).length ? 'grab' : 'default';
+  } else if (mode === 'touch') canvas.style.cursor = pointer.over ? 'crosshair' : 'default';
+});
+const endDrag = () => { pointer.down = false; pointer.dragStone = false; if (mode === 'stone') canvas.style.cursor = 'grab'; };
+canvas.addEventListener('pointerup', endDrag);
+canvas.addEventListener('pointercancel', endDrag);
+canvas.addEventListener('pointerleave', () => { pointer.over = false; pointer.moved = false; });
+
+function interact(dt) {
+  const dx = pointer.x - pointer.px, dz = pointer.z - pointer.pz;
+  const dist = Math.hypot(dx, dz);
+  if (mode === 'touch' && pointer.over && dist > 1e-4) {
+    const vx = dx / dt, vz = dz / dt, sp = Math.min(Math.hypot(vx, vz), 14), k = sp / Math.max(Math.hypot(vx, vz), 1e-6);
+    const steps = Math.min(6, Math.ceil(dist / 0.25));
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps, x = pointer.px + dx * t, z = pointer.pz + dz * t;
+      splat(x, z, vx * k * 0.9, vz * k * 0.9, 1.3, 0.35);
+      addDrop(x, z, 0.38, -Math.min(sp * 0.0045, 0.05) / steps * 2);
+    }
+  }
+  if (pointer.dragStone) {
+    const nx = THREE.MathUtils.clamp(pointer.x + pointer.grab.x, -HW + STONE_R + 0.3, HW - STONE_R - 0.3);
+    const nz = THREE.MathUtils.clamp(pointer.z + pointer.grab.y, -HD + STONE_R + 0.3, HD - STONE_R - 0.3);
+    const svx = (nx - stoneMesh.position.x) / dt, svz = (nz - stoneMesh.position.z) / dt;
+    stoneVel.set(THREE.MathUtils.clamp(svx, -10, 10), THREE.MathUtils.clamp(svz, -10, 10));
+    stoneMesh.position.x = nx; stoneMesh.position.z = nz;
+    const sp = stoneVel.length();
+    if (sp > 0.05) {
+      const ux = stoneVel.x / sp, uz = stoneVel.y / sp;
+      // 前方を盛り上げ、後方を下げる → 航跡
+      addDrop(nx + ux * STONE_R * 1.2, nz + uz * STONE_R * 1.2, 0.9, Math.min(sp * 0.004, 0.04));
+      addDrop(nx - ux * STONE_R * 1.2, nz - uz * STONE_R * 1.2, 0.9, -Math.min(sp * 0.004, 0.04));
+      splat(nx + ux * STONE_R, nz + uz * STONE_R, stoneVel.x, stoneVel.y, STONE_R * 1.3, 0.3);
+      splat(nx - ux * STONE_R, nz - uz * STONE_R, stoneVel.x * 0.8, stoneVel.y * 0.8, STONE_R * 1.3, 0.3);
+    }
+  } else stoneVel.multiplyScalar(0.8);
+  pointer.px = pointer.x; pointer.pz = pointer.z;
+
+  // 水門
+  gateAmt += ((gateOpen ? 1 : 0) - gateAmt) * Math.min(1, dt * 1.5);
+  sluice.position.y = FLOOR_Y + 0.95 + gateAmt * 3.0;
+  if (gateAmt > 0.05) {
+    for (let i = -3; i <= 3; i++) splat(i * 0.55, -HD + 0.5, 0, 3.2 * gateAmt, 0.7, 0.25);
+    if (Math.random() < 0.9) addDrop(rr(-GATE_HALF, GATE_HALF), -HD + rr(0.1, 0.8), rr(0.25, 0.5), rr(-0.035, 0.035) * gateAmt);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ループ
+// ---------------------------------------------------------------------------
+function resize() {
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  // 縦長画面では少し引く
+  camera.fov = camera.aspect < 1 ? 38 / Math.max(camera.aspect, 0.55) * 0.75 : 38;
+  camera.updateProjectionMatrix();
+  const size = renderer.getDrawingBufferSize(new THREE.Vector2());
+  sceneRT.setSize(size.x, size.y);
+  waterMat.uniforms.resolution.value.copy(size);
+}
+addEventListener('resize', resize);
+resize();
+
+// 初期の静かな波紋
+for (let i = 0; i < 5; i++) addDrop(rr(-8, 8), rr(-5, 5), rr(0.4, 0.8), rr(-0.08, 0.08));
+
+const clock = new THREE.Clock();
+let ambientT = 0;
+function frame() {
+  const dt = Math.min(clock.getDelta(), 1 / 30), t = clock.elapsedTime;
+  shared.uTime.value = t;
+  interact(dt);
+  if ((ambientT -= dt) < 0) { ambientT = rr(1.5, 4); addDrop(rr(-9, 9), rr(-6, 6), rr(0.25, 0.4), -0.03); }
+  simMat.uniforms.stone.value.set((stoneMesh.position.x + HW) / POOL_W, (stoneMesh.position.z + HD) / POOL_D, STONE_R * 1.1 / POOL_W);
+  fluidStep(dt);
+  updateLeaves(dt, t);
+  stepWaves(2);
+  shared.tHeight.value = simA.texture;
+
+  // 1) 水面なしのシーン → 屈折用テクスチャ
+  water.visible = false; leaves.visible = false;
+  renderer.setRenderTarget(sceneRT);
+  renderer.render(scene, camera);
+  // 2) 本描画（影はここで更新）
+  water.visible = true; leaves.visible = true;
+  renderer.shadowMap.needsUpdate = true;
+  renderer.setRenderTarget(null);
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+// デバッグ用フック（コンソールから波や流れを直接発生できる）
+window.garden = { addDrop, splat };
+</script>
+</body>
+</html>
