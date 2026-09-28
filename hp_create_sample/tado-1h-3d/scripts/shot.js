@@ -19,8 +19,8 @@ const { chromium } = require(process.env.PWPATH || 'playwright');
       const m = { tee: 'viewTee', top: 'viewTop', back: 'viewBack' };
       if (v.startsWith('fly')) { window.__views.viewFly(); } else window.__views[m[v]]();
     }, v);
-    await page.waitForTimeout(v.startsWith('fly') ? parseInt(v.slice(3) || '7000') : 4000);
-    await page.screenshot({ path: `${outPrefix}_${v}.png` });
+    await page.waitForTimeout(v.startsWith('fly') ? parseInt(v.slice(3) || '7000') : parseInt(process.env.WAIT||'4000'));
+    await page.screenshot({ path: `${outPrefix}_${v}.png`, timeout: 900000 });
     const fps = await page.evaluate(() => document.getElementById('fps').textContent);
     console.log('shot', v, fps, (Date.now() - t0) + 'ms');
   }

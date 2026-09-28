@@ -78,7 +78,9 @@ D = dict(near=near, mid=midd, far=fard, feat=feat, info=info,
 credit = ('出典：国土地理院　基盤地図情報 数値標高モデル（5mメッシュ DEM5A／10mメッシュ DEM10B）〔地理院タイル 標高タイル dem5a_png・dem_png〕、'
           '地理院タイル 全国最新写真（シームレス）〔seamlessphoto〕を加工して作成／コース情報：東建多度カントリークラブ・名古屋 公式サイト　｜　'
           '3D表現は推定・簡略化を含みます')
-html = open('/tmp/template.html', encoding='utf-8').read()
+import os
+html = open(os.environ.get('TEMPLATE', '/tmp/template.html'), encoding='utf-8').read()
+if os.environ.get('TREES'): D['trees'] = json.load(open(os.environ['TREES']))
 html = html.replace('__VERSION__', VERSION).replace('__DATE__', '2026年5月20日').replace('__CREDIT__', credit)
 html = html.replace('__DATA__', json.dumps(D, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/'))
 open(OUT, 'w', encoding='utf-8').write(html)

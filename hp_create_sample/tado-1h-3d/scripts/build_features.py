@@ -71,7 +71,12 @@ bld = poly([(172, 98), (228, 98), (228, 192), (172, 192)])             # hotel b
 sand = (smooth(auto == 3, 0.8) & ~bld & ~water) | bunk1
 turf = smooth(auto == 2, 1.5) & ~water & ~sand
 fair = (turf | fw1) & ~green1 & ~tees & ~sand
-forest = smooth(auto == 1, 1.5) & ~water & ~fair & ~green1 & ~tees & ~sand
+_R = ndi.uniform_filter(f05['R'], 3)[::2, ::2]; _G = ndi.uniform_filter(f05['G'], 3)[::2, ::2]; _B = ndi.uniform_filter(f05['B'], 3)[::2, ::2]
+_R, _G, _B = [ndi.gaussian_filter(c, 1.2) for c in (_R, _G, _B)]
+dark = (_B > _G + 0.025) & (_B > _R + 0.02)          # bluish = in shade (cast shadow on grass OR shaded canopy)
+dl, dn = ndi.label(ndi.binary_opening(dark, iterations=1)); dsz = ndi.sum(np.ones_like(dl), dl, range(1, dn+1))
+shadow = dark & ~np.isin(dl, [i+1 for i, v in enumerate(dsz) if v >= 900])   # small shaded patches = cast shadows; large = shaded forest
+forest = smooth((auto == 1) & ~shadow, 1.5) & ~water & ~fair & ~green1 & ~tees & ~sand
 
 paths = {
     'h1_right': [(300, 262), (307, 282), (318, 292), (360, 317), (380, 329), (415, 342), (440, 350), (455, 360),
