@@ -82,7 +82,7 @@ const HW = POOL_W / 2, HD = POOL_D / 2;
 const FLOOR_Y = -1.25;                    // 池底
 const RIM_Y = 0.3;                        // 縁の天端
 const SIM = 256;                          // 波動シミュレーション解像度
-const H_SCALE = 0.3;                     // 高さテクスチャ→ワールド高さ
+const H_SCALE = 0.55;                    // 高さテクスチャ→ワールド高さ
 const GX = 80, GZ = 56;                   // 流れ場グリッド（CPU）
 const CELL = POOL_W / GX;
 const LEAF_COUNT = 64;
@@ -147,8 +147,8 @@ const simMat = new THREE.ShaderMaterial({
       vec4 c = texture2D(tPrev, vUv);
       float avg = 0.25 * (texture2D(tPrev, vUv - vec2(texel.x, 0.)).r + texture2D(tPrev, vUv + vec2(texel.x, 0.)).r
                         + texture2D(tPrev, vUv - vec2(0., texel.y)).r + texture2D(tPrev, vUv + vec2(0., texel.y)).r);
-      c.g += (avg - c.r) * 2.0;
-      c.g *= 0.994;
+      c.g += (avg - c.r) * 1.1;
+      c.g *= 0.997;
       c.r += c.g;
       c.r *= 0.9985;
       for (int i = 0; i < ${MAX_DROPS}; i++) {
@@ -483,7 +483,7 @@ function fluidStep(dt) {
   for (let j = 0; j < GZ; j++) for (let i = 0; i < GX; i++) {
     const k = I(i, j);
     const px = i - U[k] * s, pz = j - V[k] * s;
-    U2[k] = sampleField(U, px, pz) * 0.992; V2[k] = sampleField(V, px, pz) * 0.992;
+    U2[k] = sampleField(U, px, pz) * 0.985; V2[k] = sampleField(V, px, pz) * 0.985;
   }
   [U, U2] = [U2, U]; [V, V2] = [V2, V];
   // 境界
@@ -551,7 +551,7 @@ function updateLeaves(dt, t) {
     let [fx, fz] = sampleVel(L.x, L.z);
     // ごく弱い常流（静止しすぎないように）
     fx += 0.05 * Math.sin(L.z * 0.3 + t * 0.1); fz += 0.05 * Math.cos(L.x * 0.25 - t * 0.08);
-    const k = Math.min(1, dt * 2.2 / L.s);
+    const k = Math.min(1, dt * 1.4 / L.s);
     L.vx += (fx - L.vx) * k; L.vz += (fz - L.vz) * k;
     // 渦度で回転
     const [gx, gz] = toGrid(L.x, L.z);
@@ -623,7 +623,7 @@ canvas.addEventListener('pointerdown', (e) => {
     if (ray.ray.intersectPlane(waterPlane, hit)) pointer.grab.set(stoneMesh.position.x - hit.x, stoneMesh.position.z - hit.z);
     canvas.style.cursor = 'grabbing';
   } else if (mode === 'touch' && onWater) {
-    addDrop(hit.x, hit.z, 0.45, -0.25);
+    addDrop(hit.x, hit.z, 0.7, -0.45);
   }
   if (onWater && pick(e)) { pointer.x = pointer.px = hit.x; pointer.z = pointer.pz = hit.z; pointer.over = true; }
 });
@@ -647,12 +647,12 @@ function interact(dt) {
   const dx = pointer.x - pointer.px, dz = pointer.z - pointer.pz;
   const dist = Math.hypot(dx, dz);
   if (mode === 'touch' && pointer.over && dist > 1e-4) {
-    const vx = dx / dt, vz = dz / dt, sp = Math.min(Math.hypot(vx, vz), 14), k = sp / Math.max(Math.hypot(vx, vz), 1e-6);
+    const vx = dx / dt, vz = dz / dt, sp = Math.min(Math.hypot(vx, vz), 7), k = sp / Math.max(Math.hypot(vx, vz), 1e-6);
     const steps = Math.min(6, Math.ceil(dist / 0.25));
     for (let i = 1; i <= steps; i++) {
       const t = i / steps, x = pointer.px + dx * t, z = pointer.pz + dz * t;
-      splat(x, z, vx * k * 0.9, vz * k * 0.9, 1.3, 0.35);
-      addDrop(x, z, 0.38, -Math.min(sp * 0.0045, 0.05) / steps * 2);
+      splat(x, z, vx * k * 0.4, vz * k * 0.4, 1.4, 0.25);
+      addDrop(x, z, 0.6, -Math.min(sp * 0.012, 0.09) / steps * 2);
     }
   }
   if (pointer.dragStone) {
@@ -665,10 +665,10 @@ function interact(dt) {
     if (sp > 0.05) {
       const ux = stoneVel.x / sp, uz = stoneVel.y / sp;
       // 前方を盛り上げ、後方を下げる → 航跡
-      addDrop(nx + ux * STONE_R * 1.2, nz + uz * STONE_R * 1.2, 0.9, Math.min(sp * 0.004, 0.04));
-      addDrop(nx - ux * STONE_R * 1.2, nz - uz * STONE_R * 1.2, 0.9, -Math.min(sp * 0.004, 0.04));
-      splat(nx + ux * STONE_R, nz + uz * STONE_R, stoneVel.x, stoneVel.y, STONE_R * 1.3, 0.3);
-      splat(nx - ux * STONE_R, nz - uz * STONE_R, stoneVel.x * 0.8, stoneVel.y * 0.8, STONE_R * 1.3, 0.3);
+      addDrop(nx + ux * STONE_R * 1.2, nz + uz * STONE_R * 1.2, 1.0, Math.min(sp * 0.008, 0.07));
+      addDrop(nx - ux * STONE_R * 1.2, nz - uz * STONE_R * 1.2, 1.0, -Math.min(sp * 0.008, 0.07));
+      splat(nx + ux * STONE_R, nz + uz * STONE_R, stoneVel.x * 0.5, stoneVel.y * 0.5, STONE_R * 1.3, 0.25);
+      splat(nx - ux * STONE_R, nz - uz * STONE_R, stoneVel.x * 0.4, stoneVel.y * 0.4, STONE_R * 1.3, 0.25);
     }
   } else stoneVel.multiplyScalar(0.8);
   pointer.px = pointer.x; pointer.pz = pointer.z;
@@ -677,8 +677,8 @@ function interact(dt) {
   gateAmt += ((gateOpen ? 1 : 0) - gateAmt) * Math.min(1, dt * 1.5);
   sluice.position.y = FLOOR_Y + 0.95 + gateAmt * 3.0;
   if (gateAmt > 0.05) {
-    for (let i = -3; i <= 3; i++) splat(i * 0.55, -HD + 0.5, 0, 3.2 * gateAmt, 0.7, 0.25);
-    if (Math.random() < 0.9) addDrop(rr(-GATE_HALF, GATE_HALF), -HD + rr(0.1, 0.8), rr(0.25, 0.5), rr(-0.035, 0.035) * gateAmt);
+    for (let i = -3; i <= 3; i++) splat(i * 0.55, -HD + 0.5, 0, 1.4 * gateAmt, 0.7, 0.2);
+    if (Math.random() < 0.9) addDrop(rr(-GATE_HALF, GATE_HALF), -HD + rr(0.1, 0.8), rr(0.4, 0.7), rr(-0.05, 0.05) * gateAmt);
   }
 }
 
@@ -702,7 +702,7 @@ resize();
 for (let i = 0; i < 5; i++) addDrop(rr(-8, 8), rr(-5, 5), rr(0.4, 0.8), rr(-0.08, 0.08));
 
 const clock = new THREE.Clock();
-let ambientT = 0;
+let ambientT = 0, waveAcc = 0;
 function frame() {
   const dt = Math.min(clock.getDelta(), 1 / 30), t = clock.elapsedTime;
   shared.uTime.value = t;
@@ -711,7 +711,11 @@ function frame() {
   simMat.uniforms.stone.value.set((stoneMesh.position.x + HW) / POOL_W, (stoneMesh.position.z + HD) / POOL_D, STONE_R * 1.1 / POOL_W);
   fluidStep(dt);
   updateLeaves(dt, t);
-  stepWaves(2);
+  // 波は画面のリフレッシュレートに依存しないよう 60Hz 固定で進める
+  waveAcc = Math.min(waveAcc + dt, 0.1);
+  const steps = Math.floor(waveAcc * 60);
+  waveAcc -= steps / 60;
+  if (steps > 0) stepWaves(steps);
   shared.tHeight.value = simA.texture;
 
   // 1) 水面なしのシーン → 屈折用テクスチャ
