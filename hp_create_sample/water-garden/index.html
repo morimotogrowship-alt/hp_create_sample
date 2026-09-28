@@ -82,7 +82,7 @@ const HW = POOL_W / 2, HD = POOL_D / 2;
 const FLOOR_Y = -1.25;                    // 池底
 const RIM_Y = 0.3;                        // 縁の天端
 const SIM = 256;                          // 波動シミュレーション解像度
-const H_SCALE = 0.55;                    // 高さテクスチャ→ワールド高さ
+const H_SCALE = 0.4;                     // 高さテクスチャ→ワールド高さ
 const GX = 80, GZ = 56;                   // 流れ場グリッド（CPU）
 const CELL = POOL_W / GX;
 const LEAF_COUNT = 64;
@@ -148,9 +148,9 @@ const simMat = new THREE.ShaderMaterial({
       float avg = 0.25 * (texture2D(tPrev, vUv - vec2(texel.x, 0.)).r + texture2D(tPrev, vUv + vec2(texel.x, 0.)).r
                         + texture2D(tPrev, vUv - vec2(0., texel.y)).r + texture2D(tPrev, vUv + vec2(0., texel.y)).r);
       c.g += (avg - c.r) * 1.1;
-      c.g *= 0.997;
+      c.g *= 0.985;
       c.r += c.g;
-      c.r *= 0.9985;
+      c.r *= 0.994;
       for (int i = 0; i < ${MAX_DROPS}; i++) {
         if (i >= nDrops) break;
         vec4 d = drops[i];
@@ -220,8 +220,8 @@ function underwater(mat) {
         }
         // 静かな揺らぎのコースティクス
         vec2 p = vWPos.xz * 1.7;
-        float w = sin(p.x + uTime * 0.7) + sin(p.y * 1.13 - uTime * 0.6) + sin((p.x + p.y) * 0.83 + uTime * 0.5);
-        caus += pow(1.0 - abs(w) / 3.0, 6.0) * 0.28;
+        float w = sin(p.x + uTime * 0.15) + sin(p.y * 1.13 - uTime * 0.12) + sin((p.x + p.y) * 0.83 + uTime * 0.1);
+        caus += pow(1.0 - abs(w) / 3.0, 6.0) * 0.12;
         float depth = clamp(-vWPos.y / 1.4, 0.0, 1.0);
         outgoingLight *= (1.0 + caus) * mix(vec3(1.0), vec3(0.80, 0.90, 0.87), depth);
       }
@@ -427,8 +427,8 @@ const waterMat = new THREE.ShaderMaterial({
       vec3 n = normalize(vec3(-(r - l) * hScale / cell.x, 1.0, -(u - d) * hScale / cell.y));
       vec3 V = normalize(cameraPosition - vWorld);
       vec2 suv = gl_FragCoord.xy / resolution;
-      vec2 off = n.xz * 0.11;
-      vec3 refr = vec3(texture2D(tScene, suv + off * 1.0).r, texture2D(tScene, suv + off * 1.04).g, texture2D(tScene, suv + off * 1.08).b);
+      vec2 off = n.xz * 0.05;
+      vec3 refr = vec3(texture2D(tScene, suv + off * 1.0).r, texture2D(tScene, suv + off * 1.02).g, texture2D(tScene, suv + off * 1.04).b);
       refr *= vec3(0.93, 0.98, 0.96);
       float fres = 0.02 + 0.98 * pow(1.0 - max(dot(n, V), 0.0), 5.0);
       vec3 R = reflect(-V, n);
@@ -698,16 +698,13 @@ function resize() {
 addEventListener('resize', resize);
 resize();
 
-// 初期の静かな波紋
-for (let i = 0; i < 5; i++) addDrop(rr(-8, 8), rr(-5, 5), rr(0.4, 0.8), rr(-0.08, 0.08));
 
 const clock = new THREE.Clock();
-let ambientT = 0, waveAcc = 0;
+let waveAcc = 0;
 function frame() {
   const dt = Math.min(clock.getDelta(), 1 / 30), t = clock.elapsedTime;
   shared.uTime.value = t;
   interact(dt);
-  if ((ambientT -= dt) < 0) { ambientT = rr(1.5, 4); addDrop(rr(-9, 9), rr(-6, 6), rr(0.25, 0.4), -0.03); }
   simMat.uniforms.stone.value.set((stoneMesh.position.x + HW) / POOL_W, (stoneMesh.position.z + HD) / POOL_D, STONE_R * 1.1 / POOL_W);
   fluidStep(dt);
   updateLeaves(dt, t);
