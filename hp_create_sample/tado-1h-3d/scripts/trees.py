@@ -5,6 +5,15 @@ L = np.load('/tmp/layers.npz')
 forest = L['forest']
 block = L['fair'] | L['green'] | L['sand'] | L['water'] | L['path'] | L['tees'] | L['collar']
 free = forest & ~ndi.binary_dilation(block, iterations=4)
+# manual corrections (user-confirmed ground truth): no trees in these zones (1 m image px coords)
+from PIL import Image, ImageDraw
+NO_TREE = [
+    # tee complex between REG and FRONT: stone path, cart path and lawn (the dark area is a cast shadow)
+    [(262, 240), (282, 234), (300, 238), (318, 250), (338, 258), (345, 268), (335, 276), (310, 274), (290, 272), (272, 266), (262, 256)],
+]
+_img = Image.new('L', (841, 701), 0); _d = ImageDraw.Draw(_img)
+for p in NO_TREE: _d.polygon(p, fill=1)
+free &= ~(np.asarray(_img) > 0)
 lab, n = ndi.label(free)
 sizes = ndi.sum(np.ones_like(lab), lab, range(1, n+1))
 trees = []

@@ -17,6 +17,11 @@ const { chromium } = require(process.env.PWPATH);
       const d = window.__dbg, V = window.__views, F = JSON.parse(document.getElementById('data').textContent).feat;
       const T = d.THREE;
       if (v === 'tee') V.viewTee();
+      else if (v === 'teeREG') { document.getElementById('teeSel').value='REG'; V.viewTee(); }
+      else if (v === 'teeup') {   // above the tee complex looking down-hole
+        const a = F.tees.REG, b = F.tees.LADIES; d.controls.enabled = true;
+        d.camera.position.set(a.x - 45, 87 + 32, a.z - 30); d.controls.target.set(b.x + 10, 84, b.z + 5); d.controls.update();
+      }
       else if (v === 'back') V.viewBack();
       else if (v === 'top') V.viewTop();
       else if (v === 'aerial') {   // drone-style: behind & above the tee, looking down the hole
