@@ -1,0 +1,1 @@
+function e(e){let t=[];return e.trips.forEach((e,n)=>{for(let r=1;r<e.stops.length;r++)t.push({trip:n,from:e.stops[r-1],to:e.stops[r],dep:e.times[r-1],arr:e.times[r]})}),t.sort((e,t)=>e.dep-t.dep||e.arr-t.arr)}function t(e){let t=Math.floor(e/60),n=Math.floor(e%60);return`${t}:${String(n).padStart(2,`0`)}`}export{t as n,e as t};
