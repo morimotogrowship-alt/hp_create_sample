@@ -1,0 +1,76 @@
+{
+ "near": {
+  "dem5a": {
+   "layer": "dem5a_png",
+   "z": 15,
+   "tiles_x": [
+    28816,
+    28817
+   ],
+   "tiles_y": [
+    12964,
+    12965
+   ],
+   "got": 4,
+   "missing": 0
+  },
+  "dem10": {
+   "layer": "dem_png",
+   "z": 14,
+   "tiles_x": [
+    14408,
+    14408
+   ],
+   "tiles_y": [
+    6482,
+    6482
+   ],
+   "got": 1,
+   "missing": 0
+  },
+  "grid_m": 1.0,
+  "nx": 841,
+  "nz": 701,
+  "dem5a_gap_fraction": 0.0725,
+  "hmin": 51.487485887615165,
+  "hmax": 140.56627112566207
+ },
+ "mid": {
+  "dem": {
+   "layer": "dem_png",
+   "z": 14,
+   "tiles_x": [
+    14405,
+    14411
+   ],
+   "tiles_y": [
+    6479,
+    6485
+   ],
+   "got": 49,
+   "missing": 0
+  },
+  "grid_m": 30,
+  "extent_m": 6000,
+  "n": 401
+ },
+ "far": {
+  "dem": {
+   "layer": "dem_png",
+   "z": 11,
+   "tiles_x": [
+    1798,
+    1803
+   ],
+   "tiles_y": [
+    807,
+    812
+   ],
+   "got": 36,
+   "missing": 0
+  },
+  "grid_m": 200,
+  "extent_m": 36000,
+  "n": 361
+ }
+}
