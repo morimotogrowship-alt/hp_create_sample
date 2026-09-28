@@ -623,7 +623,7 @@ canvas.addEventListener('pointerdown', (e) => {
     if (ray.ray.intersectPlane(waterPlane, hit)) pointer.grab.set(stoneMesh.position.x - hit.x, stoneMesh.position.z - hit.z);
     canvas.style.cursor = 'grabbing';
   } else if (mode === 'touch' && onWater) {
-    addDrop(hit.x, hit.z, 0.7, -0.45);
+    addDrop(hit.x, hit.z, 0.5, -0.08);
   }
   if (onWater && pick(e)) { pointer.x = pointer.px = hit.x; pointer.z = pointer.pz = hit.z; pointer.over = true; }
 });
@@ -648,11 +648,14 @@ function interact(dt) {
   const dist = Math.hypot(dx, dz);
   if (mode === 'touch' && pointer.over && dist > 1e-4) {
     const vx = dx / dt, vz = dz / dt, sp = Math.min(Math.hypot(vx, vz), 7), k = sp / Math.max(Math.hypot(vx, vz), 1e-6);
-    const steps = Math.min(6, Math.ceil(dist / 0.25));
+    const steps = Math.min(5, Math.ceil(dist / 0.3));
+    const ux = dx / dist, uz = dz / dist, amp = Math.min(sp * 0.006, 0.05) / steps;
     for (let i = 1; i <= steps; i++) {
       const t = i / steps, x = pointer.px + dx * t, z = pointer.pz + dz * t;
       splat(x, z, vx * k * 0.4, vz * k * 0.4, 1.4, 0.25);
-      addDrop(x, z, 0.6, -Math.min(sp * 0.012, 0.09) / steps * 2);
+      // 石と同じく、進む先を押し上げ、後ろを下げる → 指でなぞった航跡
+      addDrop(x + ux * 0.4, z + uz * 0.4, 0.5, amp);
+      addDrop(x - ux * 0.4, z - uz * 0.4, 0.5, -amp);
     }
   }
   if (pointer.dragStone) {
