@@ -549,6 +549,7 @@ function animate(now){
 setQuality('std'); setTime(10); viewTee();
 $('loading').style.display='none';
 window.__ready = true;
+window.__hAt = hAt;
 window.__views = {viewTee, viewTop, viewBack, viewFly, setQuality};
 window.__dbg = {clouds, treeMeshes, THREE, scene, renderer, sky, sun, hemi, uniforms, nearMat, midMesh, farMesh, camera, controls};
 requestAnimationFrame(animate);
