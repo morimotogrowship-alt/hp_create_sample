@@ -62,6 +62,7 @@ def grade(img):
 midimg = grade(midimg); farimg = grade(farimg)
 feat = json.load(open('/tmp/features.json'))
 feat['ponds'] = json.load(open('/tmp/final_log.json'))['ponds']
+feat['gazebo'] = dict(x=287-420.0, z=238-350.0)   # gazebo seen in aerial photo / video
 info = dict(
     par=5, hdcp='未確認（公式ページに記載なし）',
     yards=dict(FULL=540, BACK=512, REG=482, FRONT=454, LADIES=411),

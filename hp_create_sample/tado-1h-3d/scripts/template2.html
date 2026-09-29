@@ -323,6 +323,15 @@ for (let i=0;i<F.ob.length-1;i++){
   const m=new THREE.Mesh(new THREE.BoxGeometry(x1-x0, F.hotel.h+2, z1-z0), new THREE.MeshStandardMaterial({color:0xd9c7a6, roughness:0.85}));
   m.position.set((x0+x1)/2, base+(F.hotel.h+2)/2, (z0+z1)/2); m.castShadow=true; m.receiveShadow=true; scene.add(m); }
 
+// gazebo left of the tees (seen in the official photo and drone video; size estimated)
+if (F.gazebo){ const g=new THREE.Group(); const gx=F.gazebo.x, gz=F.gazebo.z, gh=hNear(gx,gz);
+  const postM=new THREE.MeshStandardMaterial({color:0xece6d6, roughness:0.7}), roofM=new THREE.MeshStandardMaterial({color:0x6fb3a0, roughness:0.5});
+  for (let i=0;i<8;i++){ const a=i/8*Math.PI*2; const p=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,2.6,8), postM); p.position.set(gx+Math.cos(a)*2.2, gh+1.3, gz+Math.sin(a)*2.2); p.castShadow=true; g.add(p); }
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(3.1,1.6,8), roofM); roof.position.set(gx, gh+3.4, gz); roof.castShadow=true; g.add(roof);
+  const tip=new THREE.Mesh(new THREE.SphereGeometry(0.18,10,8), postM); tip.position.set(gx, gh+4.3, gz); g.add(tip);
+  const floor=new THREE.Mesh(new THREE.CylinderGeometry(2.6,2.6,0.2,8), postM); floor.position.set(gx, gh+0.1, gz); floor.receiveShadow=true; g.add(floor);
+  scene.add(g); }
+
 // ---------- yardage ----------
 const clLen=[0]; for (let i=1;i<cl.length;i++) clLen.push(clLen[i-1]+cl[i].distanceTo(cl[i-1]));
 function pointAt(d){ d=Math.max(0,Math.min(clLen[clLen.length-1],d));
@@ -395,6 +404,13 @@ function makeTree(kind, seed){
     cyl(0,0,0, 0,0.97,0, 0.022,0.004, 7);
     for (let k=0;k<17;k++){ const t=0.18+k/17*0.8, rad=0.17*Math.pow(1-t,0.9)+0.02, cy=t;
       for (let j=0;j<7;j++){ const a=r()*Math.PI*2, rr=rad*(0.5+0.5*r()); card(Math.cos(a)*rr, cy+(r()-0.5)*0.04, Math.sin(a)*rr, 0.10+0.12*(1-t), 0,cy,0, true); } }
+  } else if (kind===3){ // low shrub / clipped hedge (unit height 1, spread wider than tall)
+    for (let k=0;k<22;k++){ const a=r()*Math.PI*2, e=r()*1.3; const cx=Math.cos(a)*Math.cos(e)*0.55, cz=Math.sin(a)*Math.cos(e)*0.55, cy=0.35+Math.sin(e)*0.5;
+      card(cx, cy, cz, 0.55+r()*0.2, 0,0.3,0, false); }
+  } else if (kind===4){ // metasequoia: tall, narrow, feathery spire
+    cyl(0,0,0, 0,0.99,0, 0.02,0.003, 7);
+    for (let k=0;k<22;k++){ const t=0.12+k/22*0.86, rad=0.11*Math.pow(1-t,0.85)+0.012, cy=t;
+      for (let j=0;j<6;j++){ const a=r()*Math.PI*2, rr=rad*(0.4+0.6*r()); card(Math.cos(a)*rr, cy+(r()-0.5)*0.03, Math.sin(a)*rr, 0.07+0.07*(1-t), 0,cy,0, true); } }
   } else { // akamatsu: tall slightly leaning trunk, flat clumps near the top
     const lx=(r()-0.5)*0.12, lz=(r()-0.5)*0.12;
     cyl(0,0,0, lx*0.5,0.45,lz*0.5, 0.028,0.022, 7); cyl(lx*0.5,0.45,lz*0.5, lx,0.82,lz, 0.022,0.01, 7);
@@ -409,19 +425,19 @@ function makeTree(kind, seed){
 const treeData = D.trees || [];
 const treeMeshes = [];
 {
-  const leafTex=[leafTexture(11,85,110,false), leafTexture(12,95,125,true), leafTexture(13,80,105,true)];
-  const barkCol=[0x5a4a3b, 0x6b4a36, 0x8d5a3a];
-  const leafTint=[0xffffff, 0xd8e6d2, 0xe6f0d8];
-  const bySp=[[],[],[]]; for (const t of treeData) bySp[t[2]].push(t);
+  const leafTex=[leafTexture(11,85,110,false), leafTexture(12,95,125,true), leafTexture(13,80,105,true), leafTexture(14,90,120,false), leafTexture(15,78,98,true)];
+  const barkCol=[0x5a4a3b, 0x6b4a36, 0x8d5a3a, 0x4a3b2c, 0x7a4f37];
+  const leafTint=[0xffffff, 0xd8e6d2, 0xe6f0d8, 0xe2eed8, 0xfff6d8];
+  const bySp=[[],[],[],[],[]]; for (const t of treeData) bySp[t[2]].push(t);
   const m4=new THREE.Matrix4(), q=new THREE.Quaternion(), v=new THREE.Vector3(), sc3=new THREE.Vector3(), col=new THREE.Color();
-  for (let sp=0; sp<3; sp++){
+  for (let sp=0; sp<5; sp++){
     const list=bySp[sp]; if (!list.length) continue;
     const {lg,tg}=makeTree(sp, 100+sp);
     const lm=new THREE.MeshStandardMaterial({map:leafTex[sp], alphaTest:0.35, side:THREE.DoubleSide, roughness:0.85, color:leafTint[sp]});
     const tm=new THREE.MeshStandardMaterial({color:barkCol[sp], roughness:1});
     const L=new THREE.InstancedMesh(lg, lm, list.length), T=new THREE.InstancedMesh(tg, tm, list.length);
     const rr=mulberry(500+sp);
-    list.forEach((t,i)=>{ const [x,z,,h,rot]=t; q.setFromAxisAngle(new THREE.Vector3(0,1,0), rot); v.set(x, hNear(x,z)-0.15, z); sc3.set(h*(0.9+0.2*rr()), h, h*(0.9+0.2*rr()));
+    list.forEach((t,i)=>{ const [x,z,,h,rot]=t; q.setFromAxisAngle(new THREE.Vector3(0,1,0), rot); v.set(x, hNear(x,z)-0.15, z); { const w = sp===3 ? h*1.6 : h; sc3.set(w*(0.9+0.2*rr()), h, w*(0.9+0.2*rr())); }
       m4.compose(v,q,sc3); L.setMatrixAt(i,m4); T.setMatrixAt(i,m4);
       col.setHSL(0.24+ (rr()-0.5)*0.05, 0.35+rr()*0.2, 0.42+rr()*0.16); L.setColorAt(i,col); });
     L.castShadow=true; L.receiveShadow=true; T.castShadow=true; T.receiveShadow=true;
