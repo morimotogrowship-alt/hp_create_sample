@@ -2,13 +2,14 @@ const { chromium } = require(process.env.PWPATH);
 (async () => {
   const file = process.argv[2], out = process.argv[3], views = process.argv[4].split(',');
   const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
-  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const page = await browser.newPage({ viewport: { width: parseInt(process.env.VW||'1280'), height: parseInt(process.env.VH||'720') } });
   await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**', r => r.fulfill({ path: '/tmp/cdn/' + r.request().url().split('three@0.160.0/')[1], contentType: 'application/javascript' }));
   page.on('pageerror', e => console.log('[pageerror]', e.message));
   await page.goto('file://' + file);
   await page.waitForFunction(() => window.__ready === true, null, { timeout: 300000 });
+  if (process.env.NOCREDIT) await page.evaluate(() => { window.__nocredit = true; });
   await page.evaluate(() => {
-    document.querySelectorAll('.panel').forEach(p => { if (p.id !== 'credit') p.style.display = 'none'; });
+    document.querySelectorAll('.panel').forEach(p => { if (p.id !== 'credit' || window.__nocredit) p.style.display = 'none'; });
     for (const id of ['tTees', 'tYards']) { const e = document.getElementById(id); e.checked = false; e.dispatchEvent(new Event('change')); }
   });
   for (const v of views) {
